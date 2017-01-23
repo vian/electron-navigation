@@ -237,12 +237,12 @@ function Navigation(options) {
             $('#nav-ctrls-reload').html(NAV.SVG_RELOAD);
         });           
         webview.on('enter-html-full-screen', function () {
-            $('.nav-views-view.active').siblings().hide()
-            $('.nav-views-view.active').parents().siblings().hide()
+            $('.nav-views-view.active').siblings().not('script').hide();
+            $('.nav-views-view.active').parents().not('script').siblings().hide();
         });
         webview.on('leave-html-full-screen', function () {
-            $('.nav-views-view.active').siblings().show()
-            $('.nav-views-view.active').parents().siblings().show()
+            $('.nav-views-view.active').siblings().not('script').show();
+            $('.nav-views-view.active').parents().siblings().not('script').show();
         });
         webview.on('load-commit', function () {
             NAV._updateCtrls(webview[0]);
