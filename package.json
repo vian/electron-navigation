@@ -1,6 +1,6 @@
 {
   "name": "electron-navigation",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "Adds a navigation interface to electron that allows you to browse the internet or view local html files with tabs and webviews.",
   "main": "index.js",
   "scripts": {

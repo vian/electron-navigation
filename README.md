@@ -321,6 +321,8 @@ git clone https://github.com/simply-coded/electron-navigation.git
 
 ### History
 ---
+* 1.2.2
+    * `FIX` - script tags no longer show after going out of fullscreen.
 * 1.2.1
     * `FIX` - changed the description to include local files.
     * `FIX` - url input now changes on tab click.
