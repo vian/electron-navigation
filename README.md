@@ -255,7 +255,8 @@ You can control the views and tabs using the object variable you created.
 > ```javascript
 > // example of all options and their default values if omitted.
 > var options = {
->     id: null,           
+>     id: null,  
+>     node: false,         
 >     icon: "clean",      
 >     title: "default",   
 >     close: true         
