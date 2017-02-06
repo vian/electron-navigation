@@ -238,6 +238,8 @@ You can control the views and tabs using the object variable you created.
 > **{ options }** [*optional*] - allows you to control the tab appearance.
 >> { **id** : *string* } - creates an id for this tab's view so you can control it later. Logs an error if the id is already taken or invalid. Defaults to **null**.  
 >> 
+>> { **node** : *boolean* } - allows the webview to use Node.js, and is only recommended for local files. Defaults to **false**.
+>>
 >> { **icon** : *string* } - changes the favicon. Defaults to **"clean"**.
 >> ```javascript
 >> icon: "default" // uses the regular favicon.
@@ -321,6 +323,8 @@ git clone https://github.com/simply-coded/electron-navigation.git
 
 ### History
 ---
+* 1.3.0
+    * `ADD` - node integration for *newTab()* function.
 * 1.2.2
     * `FIX` - script tags no longer show after going out of fullscreen.
 * 1.2.1

@@ -286,6 +286,7 @@ function Navigation(options) {
 Navigation.prototype.newTab = function (url, options) {
     var defaults = {
         id: null,           // null, 'custom'
+        node: false,        // true, false
         icon: "clean",      // 'default', 'clean', 'c:\custom.png'
         title: "default",   // 'default', 'custom'
         close: true         // true, false        
@@ -338,9 +339,17 @@ Navigation.prototype.newTab = function (url, options) {
     }
     // id
     if (options.id == null) {
-        $('#nav-body-views').append('<webview class="nav-views-view active" data-session="' + this.SESSION_ID + '" src="' + this._purifyUrl(url) + '"></webview>');
+        if (options.node) {
+            $('#nav-body-views').append('<webview class="nav-views-view active" data-session="' + this.SESSION_ID + '" src="' + this._purifyUrl(url) + '" nodeintegration></webview>');
+        } else {
+            $('#nav-body-views').append('<webview class="nav-views-view active" data-session="' + this.SESSION_ID + '" src="' + this._purifyUrl(url) + '"></webview>');
+        }     
     } else {
-        $('#nav-body-views').append('<webview id="' + options.id + '" class="nav-views-view active" data-session="' + this.SESSION_ID + '" src="' + this._purifyUrl(url) + '"></webview>');
+        if (options.node) {
+            $('#nav-body-views').append('<webview id="' + options.id + '" class="nav-views-view active" data-session="' + this.SESSION_ID + '" src="' + this._purifyUrl(url) + '" nodeintegration></webview>');
+        } else {
+            $('#nav-body-views').append('<webview id="' + options.id + '" class="nav-views-view active" data-session="' + this.SESSION_ID + '" src="' + this._purifyUrl(url) + '"></webview>');
+        }        
     }    
     this._addEvents(this.SESSION_ID, options.icon, options.title);
     this.SESSION_ID++;
