@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>local demo</title>
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: whitesmoke;
+            font-family: arial;
+            font-size: 24pt;
+        }
+        input {
+            font-size: 20pt;
+        }
+        p {
+            padding: 30px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <p>Local html files work as well! And can have node integration.</p>   
+
+    <input type="text" id="searchInput">
+    <input type="button" onclick="searchGoogle();" value="Search Google">
+
+    <script>
+        const {ipcRenderer} = require('electron')
+        
+        // listen for a message from the parent
+        ipcRenderer.on('ping', () => {
+            // send a message to the parent without any arguments
+            ipcRenderer.sendToHost('pong')
+        })
+        
+        function searchGoogle() {
+            var searchTerm = document.getElementById("searchInput").value  
+            // send a message to the parent with 1 argument          
+            ipcRenderer.sendToHost('searchFunc', searchTerm)
+        }
+        
+    </script>
+</body>
+
+</html>

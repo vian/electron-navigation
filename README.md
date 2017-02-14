@@ -1,5 +1,5 @@
 # electron-navigation
-![version](https://img.shields.io/npm/v/electron-navigation.svg?style=flat-square)  ![downloads](https://img.shields.io/npm/dt/electron-navigation.svg?style=flat-square) [![paypal](https://img.shields.io/badge/paypal-donate-orange.svg?style=flat-square)](https://www.paypal.me/JeremyE) [![license](https://img.shields.io/npm/l/electron-navigation.svg?style=flat-square)](#meta)  
+![version](https://img.shields.io/npm/v/electron-navigation.svg?style=flat-square)  ![downloads](https://img.shields.io/npm/dt/electron-navigation.svg?style=flat-square) [![license](https://img.shields.io/npm/l/electron-navigation.svg?style=flat-square)](#meta)  
 
 Adds a navigation interface to electron that allows you to browse the internet or view local html files with tabs and webviews.
 
@@ -8,7 +8,7 @@ Adds a navigation interface to electron that allows you to browse the internet o
 ### Install
 ---
 ```
-npm install electron-navigation
+npm i electron-navigation
 ```
 > Confused? Go through the [Setup](#setup) for a full guide.   
 > Know what you are doing? Skip to the [Usage](#usage) section.
@@ -20,9 +20,10 @@ npm install electron-navigation
 
 1. Create a folder; we'll call this one **demo**. In that folder create these three files.
     ```
-    demo\package.json
-    demo\index.js
-    demo\index.html
+    demo/
+    ├── package.json
+    ├── main.js
+    ├── index.html
     ```
 
 2. Let's populate these files with some basic code.  
@@ -35,36 +36,36 @@ npm install electron-navigation
       "description": "",
       "main": "index.js",
       "scripts": {
-        "test": "electron ."
+        "start": "electron ."
       },
       "author": "",
       "license": "ISC"
     }
     ```
 
-    `index.js`
+    `main.js`
     ```javascript
     const {
         app,
         BrowserWindow
-    } = require('electron');
+    } = require('electron')
 
-    let win;
+    let win
 
     app.on('ready', () => {
 
         win = new BrowserWindow({
             width: 800,
             height: 600
-        });
+        })
 
-        win.loadURL('file://' + __dirname + '/index.html');
+        win.loadURL(`file:///${__dirname}/index.html`)
 
         win.on('closed', () => {
-            win = null;
-        });
+            win = null
+        })
 
-    });
+    })
     ```
 	`index.html`
     ```html
@@ -85,13 +86,13 @@ npm install electron-navigation
     ```
     cd "C:\location\of\your\folder\demo"
     npm install electron-navigation --save
-    npm test
+    npm start
     ```
 	![](previews/demo.PNG)
 
 4. From here on out if you leave your command prompt window open to the demo directory, you can run your app by typing.
 	```
-    npm test
+    npm start
     ```
     
 ### Usage
@@ -124,8 +125,8 @@ npm install electron-navigation
     <div id="nav-body-views"></div>
     
     <script>
-        var someNameHere = require('electron-navigation');
-        var anotherName = new someNameHere();
+        var eNavigation = require('electron-navigation')
+        var nav = new eNavigation()
     </script>
 
     </body>
@@ -133,11 +134,11 @@ npm install electron-navigation
 3. Now that we have this, let's give it a quick run. If you've been following the setup guide, it would be like this.  
 
     ```
-    npm test
+    npm start
     ```
     ![](previews/basic.PNG)
 
-> This should be all you need to get the basic functionality working. Confused? Check out the [demos](https://github.com/simply-coded/electron-navigation/tree/master/test) on github, also located in your project's node-modules folder.
+> This should be all you need to get the basic functionality working. Confused? Check out the [demos](https://github.com/simply-coded/electron-navigation/tree/master/test) on github.
 
 ### Themes
 ---
@@ -151,7 +152,7 @@ You can apply themes by downloading the ones on [github](https://github.com/simp
 	<link rel="stylesheet" href="relative/location/of/theme.css">
 </head>
 ```
-* Themes also located in `YourApp\node-modules\electron-navigation\themes\`.
+
 
 The themes folder also has a template theming file that you can use to style the tabs and controls exactly how you wish. 
 
@@ -196,6 +197,9 @@ You can control how and if some elements are displayed by passing an options obj
 { **verticalTabs** : *boolean* }
 > Changes the direction tabs are stacked in #nav-body-tabs. Defaults to **false**.
 
+{ **defaultFavicons** : *boolean* }
+> Uses the default favicons instead of the unified color coded ones in .nav-tabs-tab. Defaults to **false**.
+
 ```javascript
 // example of all options and their default values if omitted.
 options = {
@@ -205,21 +209,22 @@ options = {
     showUrlBar: true,
     showAddTabButton: true,
     closableTabs: true,
-    verticalTabs: false
+    verticalTabs: false,
+    defaultFavicons: false
 }
 ```
 
 Example: `index.html`
 ```html
 <script>
-    var eNavigation = require('electron-navgation');
+    var eNavigation = require('electron-navgation')
 
     // the order doesn't matter
     var nav = new eNavigation({
         showAddTabButton: false,
         showUrlBar: true,
         showReloadButton: false
-    });
+    })
 </script>
 ```
 
@@ -286,20 +291,20 @@ You can control the views and tabs using the object variable you created.
 Example: `index.html`
 ```html
 <script>    
-    var eNavigation = require('electron-navigation');
-	var nav = new eNavigation({ showAddTabButton: false });
+    var eNavigation = require('electron-navigation')
+	var nav = new eNavigation({ showAddTabButton: false })
 	
-    nav.newTab('google.com', { id: 'srch' } );
+    nav.newTab('google.com', { id: 'srch' } )
     
     //setTimeout() is just used to show the effect.
-    setTimeout("nav.changeTab('cool wallpapers', 'srch')", 2000);    
-    setTimeout("nav.back('srch')", 5000);
+    setTimeout("nav.changeTab('cool wallpapers', 'srch')", 2000)
+    setTimeout("nav.back('srch')", 5000)
     
     // open a local file, and use a custom icon
     nav.newTab('file:///' + __dirname + '/demo-file.html', { 
     	icon: 'demo-icon.png',
     	title: 'Local file'            
-    });
+    })
 
     // create an unclosable tab that you can reference later with the id.
     nav.newTab('youtube.com', {
@@ -307,9 +312,9 @@ Example: `index.html`
     	icon: 'default',
     	close: false,
     	id: 'watchStuff'
-    });
+    })
     
-    setTimeout('nav.changeTab( "https://www.youtube.com/watch?v=3_s8-OIkhOc" , "watchStuff" );', 5000);
+    setTimeout('nav.changeTab( "https://www.youtube.com/watch?v=3_s8-OIkhOc" , "watchStuff" );', 5000)
     
 </script>
 ```
@@ -322,8 +327,20 @@ Example: `index.html`
 git clone https://github.com/simply-coded/electron-navigation.git
 ```
 
+After you've cloned the project you can run the demos with npm.
+```
+npm test
+```
+
 ### History
 ---
+* 1.4.0
+    * `ADD` - default favicons for main *options* object called **defaultFavicons**.
+    * `FIX` - cleaned up some of the **README.md** code.
+    * `CHANGE` - better demos in the **test/** folder.
+    * `ADD` - local file example, with communication between parent and child.
+    * `REMOVE` - extra demo files.
+    * `CHANGE` - cleaned up the module code in **index.js**.
 * 1.3.0
     * `ADD` - node integration for *newTab()* function.
 * 1.2.2

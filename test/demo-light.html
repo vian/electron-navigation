@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <title>horizontal demo</title>
     <style>
         html,
         body {
@@ -24,23 +25,22 @@
     </div>
     <div id="nav-body-views">
         <!-- view -->
-    </div>
+    </div>    
     <script>
         /* development */
         var eNavigation = require('../index.js');
         var nav = new eNavigation();
+        /* production
+            var eNavigation = require('electron-navigation');
+            var nav = new eNavigation();
+        */
         
         nav.newTab('google.com', { id: 'srch' } );
     
         //setTimeout() is just used to show the effect.
         setTimeout("nav.changeTab('cool wallpapers', 'srch')", 2000);    
         setTimeout("nav.back('srch')", 5000);
-        
-        /* production
-            var eNavigation = require('electron-navigation');
-            var nav = new eNavigation();
-        */
+                
     </script>
 </body>
-
 </html>
