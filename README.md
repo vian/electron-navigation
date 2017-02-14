@@ -34,7 +34,7 @@ npm i electron-navigation
       "name": "demo",
       "version": "1.0.0",
       "description": "",
-      "main": "index.js",
+      "main": "main.js",
       "scripts": {
         "start": "electron ."
       },
@@ -71,21 +71,19 @@ npm i electron-navigation
     ```html
     <!DOCTYPE html>
     <html>
-    	<head>
+      <head></head>
+        <body>
 
-		</head>
-      	<body>
-
-			test demo
+		  test demo
         
-      	</body>
+        </body>
     </html>
     ```
     
 3. Time to test if it works. Open up your command prompt (windows) and type these commands hitting *enter* after each one. Make sure you have Node.js installed which can be found [here](https://nodejs.org/en/download/).
     ```
     cd "C:\location\of\your\folder\demo"
-    npm install electron-navigation --save
+    npm i electron-navigation --save
     npm start
     ```
 	![](previews/demo.PNG)
@@ -104,9 +102,9 @@ npm i electron-navigation
     <body>
     <!-- your code here -->
 
-    <div id="nav-body-ctrls"></div>
-    <div id="nav-body-tabs"></div>
-    <div id="nav-body-views"></div>
+      <div id="nav-body-ctrls"></div>
+      <div id="nav-body-tabs"></div>
+      <div id="nav-body-views"></div>
 
     </body>
     ```
@@ -138,7 +136,7 @@ npm i electron-navigation
     ```
     ![](previews/basic.PNG)
 
-> This should be all you need to get the basic functionality working. Confused? Check out the [demos](https://github.com/simply-coded/electron-navigation/tree/master/test) on github.
+> This should be all you need to get the basic functionality working. If you are confused and want some more examples including how to use **local html files** in the tabs then check out the [demos](https://github.com/simply-coded/electron-navigation/tree/master/test) on github.
 
 ### Themes
 ---
@@ -147,9 +145,9 @@ You can apply themes by downloading the ones on [github](https://github.com/simp
 `index.html`
 ```html
 <head>
-	<!-- your code here -->
+  <!-- your code here -->
     
-	<link rel="stylesheet" href="relative/location/of/theme.css">
+  <link rel="stylesheet" href="relative/location/of/theme.css">
 </head>
 ```
 
@@ -334,6 +332,9 @@ npm test
 
 ### History
 ---
+* 1.4.1
+    * `FIX` - had the incorrect startup script in **package.json**.
+    * `CHANGE` - clarified where you can find more examples in the **README.md**.
 * 1.4.0
     * `ADD` - default favicons for main *options* object called **defaultFavicons**.
     * `FIX` - cleaned up some of the **README.md** code.
