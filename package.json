@@ -28,8 +28,7 @@
     "display",
     "local",
     "ipc-message",
-    "ipcRenderer",
-    "html"
+    "ipcRenderer"    
   ],
   "author": "Jeremy England",
   "license": "MIT",
