@@ -1,6 +1,6 @@
 {
   "name": "electron-navigation",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "Adds a navigation interface to electron that allows you to browse the internet or view local html files with tabs and webviews.",
   "main": "index.js",
   "scripts": {
@@ -28,7 +28,8 @@
     "display",
     "local",
     "ipc-message",
-    "ipcRenderer"
+    "ipcRenderer",
+    "html"
   ],
   "author": "Jeremy England",
   "license": "MIT",
