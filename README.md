@@ -261,7 +261,7 @@ You can control the views and tabs using the object variable you created.
 >     icon: "clean",      
 >     title: "default",   
 >     close: true         
-> };
+> }
 > ``` 
 
 **.changeTab ( url , id )**
@@ -297,8 +297,8 @@ Example: `index.html`
     setTimeout("nav.back('srch')", 5000)
     
     // open a local file, and use a custom icon
-    nav.newTab('file:///' + __dirname + '/demo-file.html', { 
-    	icon: 'demo-icon.png',
+    nav.newTab(`file:///${__dirname}/your-html-file.html`, { 
+    	icon: 'images/site-icon.ico',
     	title: 'Local file'            
     })
 
