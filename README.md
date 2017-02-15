@@ -3,7 +3,7 @@
 
 Adds a navigation interface to electron that allows you to browse the internet or view local html files with tabs and webviews.
 
-![](previews/light.PNG)![](previews/live.gif)
+![](previews/light-theme.PNG)![](previews/in-action.gif)
 
 ### Install
 ---
@@ -86,7 +86,7 @@ npm i electron-navigation
     npm i electron-navigation --save
     npm start
     ```
-	![](previews/demo.PNG)
+	![](previews/electron.PNG)
 
 4. From here on out if you leave your command prompt window open to the demo directory, you can run your app by typing.
 	```
@@ -134,7 +134,7 @@ npm i electron-navigation
     ```
     npm start
     ```
-    ![](previews/basic.PNG)
+    ![](previews/electron-with-module.PNG)
 
 > This should be all you need to get the basic functionality working. If you are confused and want some more examples including how to use **local html files** in the tabs then check out the [demos](https://github.com/simply-coded/electron-navigation/tree/master/test) on github.
 
@@ -157,16 +157,14 @@ The themes folder also has a template theming file that you can use to style the
 `theme-template.css`
 ```css
 /* back button, grouped in: .nav-icons */
-
 #nav-ctrls-back {
     /* fill:#000; width:24px; height:24px; */
 }
 
 
 /* back button with no history, grouped in: .nav-icons.disabled */
-
 #nav-ctrls-back.disabled {
-    /* pointer-events:none;	opacity:0.5; */
+    /* pointer-events:none; opacity:0.5; */
 }
 ```
 
@@ -201,7 +199,7 @@ You can control how and if some elements are displayed by passing an options obj
 ```javascript
 // example of all options and their default values if omitted.
 options = {
-	showBackButton: true,
+    showBackButton: true,
     showForwardButton: true,
     showReloadButton: true,
     showUrlBar: true,
@@ -332,6 +330,9 @@ npm test
 
 ### History
 ---
+* 1.4.2
+    * `CHANGE` - renamed the preview files to be more clear on what they are.
+    * `CHANGE` - replaced the live preview with one that shows a local file example.
 * 1.4.1
     * `FIX` - had the incorrect startup script in **package.json**.
     * `CHANGE` - clarified where you can find more examples in the **README.md**.
