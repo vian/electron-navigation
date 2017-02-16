@@ -170,7 +170,8 @@ The themes folder also has a template theming file that you can use to style the
 
 ### Options
 ---
-You can control how and if some elements are displayed by passing an options object through the main electron-navigation object.  
+You can control how and if some elements are displayed by passing an options object through the main electron-navigation object.
+```var nav = new eNavigation(```<span style="color:lime"> **{ }** </span>```);``` 
 
 { **showBackButton** : *boolean* }
 > Shows/Hides the back button in #nav-body-ctrls. Defaults to **true**.
@@ -227,7 +228,8 @@ Example: `index.html`
 
 ### Methods
 ---
-You can control the views and tabs using the object variable you created. 
+You can control the views and tabs using the object variable you created.   
+```var ``` <span style="color:lime">**nav**</span> ``` = new eNavigation();```
 
 **.newTab ( url , { options } )**  
 > **url** [*required*] - specifies the location of the webview. Will auto add an HTTP protocol if a domain is specified. Otherwise it will perform a google search.
