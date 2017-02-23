@@ -37,7 +37,7 @@
     <script>
         const {ipcRenderer} = require('electron')
         
-        // listen for a message from the parent
+        // listen for a message from the parent 'demo-dark.html'
         ipcRenderer.on('ping', () => {
             // send a message to the parent without any arguments
             ipcRenderer.sendToHost('pong')
