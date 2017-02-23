@@ -5,7 +5,6 @@ const {
 
 let demoLight;
 let demoDark;
-let demoCustom;
 
 app.on('ready', () => {
 
