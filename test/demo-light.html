@@ -27,19 +27,22 @@
         <!-- view -->
     </div>    
     <script>
-        /* development */
-        var eNavigation = require('../index.js');
-        var nav = new eNavigation();
-        /* production
-            var eNavigation = require('electron-navigation');
-            var nav = new eNavigation();
-        */
+        /* production */
+        // const enav = new (require('electron-navigation'))()
         
-        nav.newTab('google.com', { id: 'srch' } );
+        /* development */
+        const enav = new (require('../index.js'))()
+        
+
+        // create new tab
+        enav.newTab('google.com', { id: 'srch' } )
+
+        // open developer tools for webview ID of 'srch'
+        enav.openDevTools('srch')
     
         //setTimeout() is just used to show the effect.
-        setTimeout("nav.changeTab('cool wallpapers', 'srch')", 2000);    
-        setTimeout("nav.back('srch')", 5000);
+        setTimeout("enav.changeTab('cool wallpapers', 'srch')", 2000)
+        setTimeout("enav.back('srch')", 5000)       
                 
     </script>
 </body>

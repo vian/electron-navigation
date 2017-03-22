@@ -123,8 +123,8 @@ npm i electron-navigation
     <div id="nav-body-views"></div>
     
     <script>
-        var eNavigation = require('electron-navigation')
-        var nav = new eNavigation()
+        const ElectronNavigation = require('electron-navigation')
+        const enav = new ElectronNavigation()
     </script>
 
     </body>
@@ -171,7 +171,7 @@ The themes folder also has a template theming file that you can use to style the
 ### Options
 ---
 You can control how and if some elements are displayed by passing an options object through the main electron-navigation object.
-```var nav = new eNavigation(```<span style="color:lime"> **{ }** </span>```);``` 
+```const enav = new ElectronNavigation(```<span style="color:lime"> **{ }** </span>```);``` 
 
 { **showBackButton** : *boolean* }
 > Shows/Hides the back button in #nav-body-ctrls. Defaults to **true**.
@@ -214,14 +214,23 @@ options = {
 Example: `index.html`
 ```html
 <script>
-    var eNavigation = require('electron-navgation')
+    const ElectronNavigation = require('electron-navgation')
 
     // the order doesn't matter
-    var nav = new eNavigation({
+    const enav = new ElectronNavigation({
         showAddTabButton: false,
         showUrlBar: true,
         showReloadButton: false
     })
+
+    
+    /* shortcut
+    const enav = new (require('electron-navgation'))({
+        showAddTabButton: false,
+        showUrlBar: true,
+        showReloadButton: false
+    })
+    */
 </script>
 ```
 
@@ -229,7 +238,7 @@ Example: `index.html`
 ### Methods
 ---
 You can control the views and tabs using the object variable you created.   
-```var ``` <span style="color:lime">**nav**</span> ``` = new eNavigation();```
+```const ``` <span style="color:lime">**enav**</span> ``` = new ElectronNavigation();```
 
 **.newTab ( url , { options } )**  
 > **url** [*required*] - specifies the location of the webview. Will auto add an HTTP protocol if a domain is specified. Otherwise it will perform a google search.
@@ -286,33 +295,73 @@ You can control the views and tabs using the object variable you created.
 **.stop ( id )**
 > **id** [*optional*] - stops loading the webview with the id specified in *newTab()*. If no id is given the active tab and view are affected. Will console.log an error if the id doesn't exist.
 
+**.openDevTools ( id )**
+> **id** [*optional*] - opens the developer tools for the webview with the id specified in *newTab()*. If no id is given the active tab and view are affected. Will console.log an error if the id doesn't exist.
+
+**.send ( id, channel, args )**
+> **id** - sends a message to the webview with the id specified in *newTab()*. Will console.log an error if the id doesn't exist.  
+>
+> **channel** - a channel name of your choosing to keep track of messages.  
+>
+> **args** - a list [] of arguments to send to the webview.    
+>```javascript
+> enav.send('webviewIdHere', 'channelNameHere', ['arg', 'list', 'here'])
+>```
+> * See `test/parent-main.html` & `test/child-local.html` for examples.
+
+**.listen ( id, callback )**
+> **id** - listens for a message from the webview with the id specified in *newTab()*. Will console.log an error if the id doesn't exist.  
+>
+> **callback** ( channel, args, respond ) - a function that returns info from a webview message.
+>> **channel** - the channel the message is comming from.
+>>
+>> **args** - a list [] of arguments from the webview.  
+>>
+>> **respond** - the webview element that sent the message.  
+>>```javascript
+>> enav.listen('webviewIdHere', (channel, args, respond) => {
+>>      if (channel == 'channelNameHere') {
+>>          let argOne = args[0]
+>>          let argTwo = args[1]
+>>          // etc...
+>>
+>>          //respond
+>>          respond.send('anotherChannelNameHere', ['arg', 'list', 'here'])
+>>      }
+>> }
+>>```
+> * See `test/parent-main.html` & `test/child-local.html` for examples.
+
+
 Example: `index.html`
 ```html
-<script>    
-    var eNavigation = require('electron-navigation')
-	var nav = new eNavigation({ showAddTabButton: false })
+<script>   
+    // create object
+    const enav = new (require('electron-navigation'))({ 
+        showAddTabButton: false 
+    })
 	
-    nav.newTab('google.com', { id: 'srch' } )
+    enav.newTab('google.com', { id: 'srch' } )
     
     //setTimeout() is just used to show the effect.
-    setTimeout("nav.changeTab('cool wallpapers', 'srch')", 2000)
-    setTimeout("nav.back('srch')", 5000)
+    setTimeout("enav.changeTab('cool wallpapers', 'srch')", 2000)
+    setTimeout("enav.back('srch')", 5000)
     
     // open a local file, and use a custom icon
-    nav.newTab(`file:///${__dirname}/your-html-file.html`, { 
+    enav.newTab(`file:///${__dirname}/your-html-file.html`, { 
     	icon: 'images/site-icon.ico',
     	title: 'Local file'            
     })
 
     // create an unclosable tab that you can reference later with the id.
-    nav.newTab('youtube.com', {
+    enav.newTab('youtube.com', {
     	title: 'Watch Videos',
     	icon: 'default',
     	close: false,
     	id: 'watchStuff'
     })
     
-    setTimeout('nav.changeTab( "https://www.youtube.com/watch?v=3_s8-OIkhOc" , "watchStuff" );', 5000)
+    setTimeout('enav.changeTab( "https://www.youtube.com/watch?v=3_s8-OIkhOc" , "watchStuff" );', 5000)
     
 </script>
 ```
@@ -332,6 +381,10 @@ npm test
 
 ### History
 ---
+* 1.5.0
+    * `ADD` - *send()*, *listen()*, and *openDevTools()* functions for easier local HTML communication.
+    * `CHANGE` - test folder file names and contents to reflect the latest features.
+    * `CHANGE` - update **README.md** with new functions.
 * 1.4.2
     * `CHANGE` - renamed the preview files to be more clear on what they are.
     * `CHANGE` - replaced the live preview with one that shows a local file example.

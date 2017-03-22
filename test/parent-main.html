@@ -73,49 +73,50 @@
         <!-- view -->
     </div>
     <script>
+        /* production */
+        // const enav = new (require('electron-navigation'))()
+
         /* development */
-        var eNavigation = require('../index.js');
-        var nav = new eNavigation({
+        const enav = new (require('../index.js'))({
             showUrlBar: false,
             verticalTabs: true,
             defaultFavicons: true
-        });
-        /* production
-            var eNavigation = require('electron-navigation');
-            var nav = new eNavigation();
-        */
-
-        nav.newTab(`file:///${__dirname}/demo-local.html`, {
+        })      
+            
+        enav.newTab(`file:///${__dirname}/child-local.html`, {
             id: "homePage",
             close: false,
             node: true,
-            icon: "demo-icon.ico"
+            icon: "home.ico"
         })
 
-        // communicate between the local file
-        webview = document.getElementById('homePage')   
+        // 1.) send a message to the child (child-local.html)
+        enav.send('homePage', 'fromParent_Example', ['sending', 4, 'args to', 'child'])
+        
+        // listen for messages from the child (child-local.html)
+        enav.listen('homePage', (channel, args, respond) => {       
 
-        webview.addEventListener("dom-ready", function (event) {                    
-            // send a message to the child
-            webview.send('ping')
-            
-            // listen for a message from the child
-            webview.addEventListener('ipc-message', (event) => {   
-                // select which child channel is sending the message                             
-                if ( event.channel === 'searchFunc') {
-                    // if it is from our searchGoogle function then 
-                    // perform that operation with 1st argument provided
-                    nav.newTab( event.args[0] )
-
-                } else if ( event.channel === 'pong') {
-                    // if it is just our silly ping pong example, then just log
-                    // out the channel name.
-                    console.log( event.channel )
-                }
-            })            
-            
-        })     
-
+            // 4.) select correct channel
+            if (channel == 'fromChild_Example') {
+                // show arguments from child
+                alert('parent recieved: ' + args )
+                // store them
+                let thirdArg = args[2]
+                // do whatever else...
+            } 
+            // google search example
+            else if (channel == 'childSearchFunc') {  
+                // make a new tab with the argument
+                enav.newTab(args[0])
+                // respond is the webview element that sent the message. So to send a message back you don't need an ID.
+                respond.send('childSearchFuncDone', 'I performed your search.') 
+                
+                /* If you need to send to a specific webview you can use the enav.send() function, and change the 'homePage' ID
+                    enav.send('homePage', 'childSearchFuncDone', ['I performed your search.'])                    
+                */
+            }
+        })
+ 
     </script>
 </body>
 

@@ -37,17 +37,26 @@
     <script>
         const {ipcRenderer} = require('electron')
         
-        // listen for a message from the parent
-        ipcRenderer.on('ping', () => {
-            // send a message to the parent without any arguments
-            ipcRenderer.sendToHost('pong')
+        // 2.) listen for a message from the parent (paremt-main.html)
+        ipcRenderer.on('fromParent_Example', (event, data) => {            
+            // show arguments from parent
+            alert('child received: ' + data)
+            // store them
+            let secondArg = data[1]     
+
+            // 3.) respond to parent
+            ipcRenderer.sendToHost('fromChild_Example', ['I', 'got', 'your args'])
         })
-        
+
+        // google search example     
         function searchGoogle() {
             var searchTerm = document.getElementById("searchInput").value  
             // send a message to the parent with 1 argument          
-            ipcRenderer.sendToHost('searchFunc', searchTerm)
+            ipcRenderer.sendToHost('childSearchFunc', searchTerm)
         }
+        ipcRenderer.on('childSearchFuncDone', (event, data) => {            
+            alert('pointless confirmation: ' + data)
+        })
         
     </script>
 </body>

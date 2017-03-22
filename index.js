@@ -11,14 +11,13 @@
  *      <div id='nav-body-views'></div>       
  *  Add these scripts to your html (at the end of the body tag).
  *      <script>
- *          var eNavigation = require('electron-navigation')
- *          var nav = new eNavigation()
+ *          const enav = new (require('electron-navigation'))()
  *      </script>
  *  Add a theme file to your html (at the end of the head tag)(optional).
  *      <link rel="stylesheet" type="text/css" href="location/of/theme.css">
  */
 /**
- * MODULES
+ * DEPENDENCIES
  */
 var $ = require('jquery')
 var Color = require('color.js')
@@ -83,7 +82,7 @@ function Navigation(options) {
         $('#nav-body-tabs').append('<i id="nav-tabs-add" class="nav-icons" title="Add new tab">' + this.SVG_ADD + '</i>')
     }
     /**
-     * ADD STYLE
+     * ADD CORE STYLE
      */
     if (options.verticalTabs) {
         $('head').append('<style id="nav-core-styles">#nav-body-ctrls,#nav-body-tabs,#nav-body-views,.nav-tabs-tab{display:flex;align-items:center;}#nav-body-tabs{overflow:auto;min-height:32px;flex-direction:column;}#nav-ctrls-url{box-sizing:border-box;}.nav-tabs-tab{min-width:60px;width:100%;min-height:20px;}.nav-icons{fill:#000;width:24px;height:24px}.nav-icons.disabled{pointer-events:none;opacity:.5}#nav-ctrls-url{flex:1;height:24px}.nav-views-view{flex:0 1;width:0;height:0}.nav-views-view.active{flex:1;width:100%;height:100%}.nav-tabs-favicon{align-content:flex-start}.nav-tabs-title{flex:1;cursor:default;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.nav-tabs-close{align-content:flex-end}@keyframes nav-spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}</style>')
@@ -474,6 +473,87 @@ Navigation.prototype.stop = function (id) {
         }
     }
 } //:stop()
+//
+// listen for a message from webview
+//
+Navigation.prototype.listen = function (id, callback) {    
+    let webview = null
+
+    //check id
+    if ($('#' + id).length) {
+        webview = document.getElementById(id)
+    } else {            
+        console.log('ERROR[electron-navigation][func "listen();"]: Cannot find the ID "' + id + '"')
+    }
+    
+    // listen for message
+    if (webview != null) {
+        try {
+            webview.addEventListener('ipc-message', (event) => {                    
+                callback(event.channel, event.args, webview);
+            })
+        } catch (e) {
+            webview.addEventListener("dom-ready", function (event) {
+                webview.addEventListener('ipc-message', (event) => {                    
+                    callback(event.channel, event.args, webview);
+                })             
+            })
+        }        
+    } 
+} //:listen()
+//
+// send message to webview
+//
+Navigation.prototype.send = function (id, channel, args) {    
+    let webview = null
+
+    // check id
+    if ($('#' + id).length) {
+        webview = document.getElementById(id)
+    } else {            
+        console.log('ERROR[electron-navigation][func "send();"]: Cannot find the ID "' + id + '"')
+    }
+    
+    // send a message
+    if (webview != null) {
+        try {
+            webview.send(channel, args)
+        } catch (e) {
+            webview.addEventListener("dom-ready", function (event) {
+                webview.send(channel, args)
+            })
+        }        
+    } 
+} //:send()
+//
+// open developer tools of current or ID'd webview
+//
+Navigation.prototype.openDevTools = function(id) {
+    id = id || null
+    let webview = null
+
+    // check id
+    if (id == null) {
+        webview = $('.nav-views-view.active')[0]
+    } else {
+        if ($('#' + id).length) {
+            webview = document.getElementById(id)
+        } else {            
+            console.log('ERROR[electron-navigation][func "openDevTools();"]: Cannot find the ID "' + id + '"')
+        }
+    }
+    
+    // open dev tools
+    if (webview != null) {
+        try {
+            webview.openDevTools()
+        } catch (e) {
+            webview.addEventListener("dom-ready", function (event) {
+                webview.openDevTools()
+            })
+        }        
+    }    
+} //:openDevTools()
 /**
  * MODULE EXPORTS 
  */

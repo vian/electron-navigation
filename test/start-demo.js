@@ -14,7 +14,7 @@ app.on('ready', () => {
     demoLight.on('close', () => { demoLight = null })
 
     demoDark = new BrowserWindow()    
-    demoDark.loadURL(`file:///${__dirname}/demo-dark.html`)
+    demoDark.loadURL(`file:///${__dirname}/parent-main.html`)
     demoDark.on('close', () => { demoDark = null })    
 
 });
