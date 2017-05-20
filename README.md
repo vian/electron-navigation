@@ -1,11 +1,11 @@
 # electron-navigation
-![version](https://img.shields.io/npm/v/electron-navigation.svg?style=flat-square)  ![downloads](https://img.shields.io/npm/dt/electron-navigation.svg?style=flat-square) [![license](https://img.shields.io/npm/l/electron-navigation.svg?style=flat-square)](#meta)  
+![version](https://img.shields.io/npm/v/electron-navigation.svg?style=flat-square)![downloads](https://img.shields.io/npm/dt/electron-navigation.svg?style=flat-square)![license](https://img.shields.io/npm/l/electron-navigation.svg?style=flat-square)
 
-Adds a navigation interface to electron that allows you to browse the internet or view local html files with tabs and webviews.
+## Adds a navigation interface to electron that allows you to browse the internet or view local html files with tabs and webviews.
 
 ![](previews/light-theme.PNG)![](previews/in-action.gif)
 
-### Install
+## Install 
 ---
 ```
 npm i electron-navigation
@@ -13,8 +13,21 @@ npm i electron-navigation
 > Confused? Go through the [Setup](#setup) for a full guide.   
 > Know what you are doing? Skip to the [Usage](#usage) section.
 
-### Setup
----
+
+<p align="center" style="color:black;">
+    <a href="#setup" style="color:grey;">SETUP</a> |
+    <a href="#usage" style="color:grey;">USAGE</a> |
+    <a href="#themes" style="color:grey;">THEME</a> |
+    <a href="#options" style="color:grey;">OPTIONS</a> |
+    <a href="#methods" style="color:grey;">METHODS</a> |
+    <a href="#more" style="color:grey;">MORE</a> |
+    <a href="#history" style="color:grey;">HISTORY</a> |
+    <a href="#meta" style="color:grey;">CONTACT</a>
+</p>
+
+## Setup
+---  
+
 > This works with electron, so let's get a basic electron app going.
 
 
@@ -92,13 +105,25 @@ npm i electron-navigation
 	```
     npm start
     ```
-    
-### Usage
+
+<p align="center" style="color:black;">
+    <a href="#setup" style="color:grey;">SETUP</a> |
+    <a href="#usage" style="color:grey;">USAGE</a> |
+    <a href="#themes" style="color:grey;">THEME</a> |
+    <a href="#options" style="color:grey;">OPTIONS</a> |
+    <a href="#methods" style="color:grey;">METHODS</a> |
+    <a href="#more" style="color:grey;">MORE</a> |
+    <a href="#history" style="color:grey;">HISTORY</a> |
+    <a href="#meta" style="color:grey;">CONTACT</a>
+</p>
+
+## Usage
 ---
 1. In your main **~.html** file you need to create **3** containers where the controls, tabs, and views will be auto placed into. The demo uses **index.html** as it's main file.
-
-    `index.html`
+    
     ```html
+    EXAMPLE: index.html
+
     <body>
     <!-- your code here -->
 
@@ -115,8 +140,10 @@ npm i electron-navigation
 	
 2. Now we need to apply the module by adding a script tag to the **~.html** file so that it can add the tabs and controls to the containers we just created above.	
 
-    `index.html`
+    
     ```html
+    EXAMPLE: index.html
+
     <!-- your code here -->
 	<div id="nav-body-ctrls"></div>
     <div id="nav-body-tabs"></div>
@@ -138,7 +165,18 @@ npm i electron-navigation
 
 > This should be all you need to get the basic functionality working. If you are confused and want some more examples including how to use **local html files** in the tabs then check out the [demos](https://github.com/simply-coded/electron-navigation/tree/master/test) on github.
 
-### Themes
+<p align="center" style="color:black;">
+    <a href="#setup" style="color:grey;">SETUP</a> |
+    <a href="#usage" style="color:grey;">USAGE</a> |
+    <a href="#themes" style="color:grey;">THEME</a> |
+    <a href="#options" style="color:grey;">OPTIONS</a> |
+    <a href="#methods" style="color:grey;">METHODS</a> |
+    <a href="#more" style="color:grey;">MORE</a> |
+    <a href="#history" style="color:grey;">HISTORY</a> |
+    <a href="#meta" style="color:grey;">CONTACT</a>
+</p>
+
+## Themes
 ---
 You can apply themes by downloading the ones on [github](https://github.com/simply-coded/electron-navigation/tree/master/themes) and putting them in your `<head>` tag.  
 
@@ -168,10 +206,24 @@ The themes folder also has a template theming file that you can use to style the
 }
 ```
 
-### Options
+<p align="center" style="color:black;">
+    <a href="#setup" style="color:grey;">SETUP</a> |
+    <a href="#usage" style="color:grey;">USAGE</a> |
+    <a href="#themes" style="color:grey;">THEME</a> |
+    <a href="#options" style="color:grey;">OPTIONS</a> |
+    <a href="#methods" style="color:grey;">METHODS</a> |
+    <a href="#more" style="color:grey;">MORE</a> |
+    <a href="#history" style="color:grey;">HISTORY</a> |
+    <a href="#meta" style="color:grey;">CONTACT</a>
+</p>
+
+## Options
 ---
-You can control how and if some elements are displayed by passing an options object through the main electron-navigation object.
-```const enav = new ElectronNavigation(```<span style="color:lime"> **{ }** </span>```);``` 
+> You can control how and if some elements are displayed by passing an options object through the main electron-navigation object.
+```const enav = new ElectronNavigation(```<span style="color:red"> **{ }** </span>```);``` 
+
+<details>
+<summary>Details ( click to expand )</summary>
 
 { **showBackButton** : *boolean* }
 > Shows/Hides the back button in #nav-body-ctrls. Defaults to **true**.
@@ -198,7 +250,7 @@ You can control how and if some elements are displayed by passing an options obj
 > Uses the default favicons instead of the unified color coded ones in .nav-tabs-tab. Defaults to **false**.
 
 ```javascript
-// example of all options and their default values if omitted.
+// Example of all options and their default values if omitted.
 options = {
     showBackButton: true,
     showForwardButton: true,
@@ -211,8 +263,11 @@ options = {
 }
 ```
 
-Example: `index.html`
+</details>
+
 ```html
+EXAMPLE: index.html
+
 <script>
     const ElectronNavigation = require('electron-navgation')
 
@@ -234,13 +289,26 @@ Example: `index.html`
 </script>
 ```
 
+<p align="center" style="color:black;">
+    <a href="#setup" style="color:grey;">SETUP</a> |
+    <a href="#usage" style="color:grey;">USAGE</a> |
+    <a href="#themes" style="color:grey;">THEME</a> |
+    <a href="#options" style="color:grey;">OPTIONS</a> |
+    <a href="#methods" style="color:grey;">METHODS</a> |
+    <a href="#more" style="color:grey;">MORE</a> |
+    <a href="#history" style="color:grey;">HISTORY</a> |
+    <a href="#meta" style="color:grey;">CONTACT</a>
+</p>
 
-### Methods
+## Methods
 ---
-You can control the views and tabs using the object variable you created.   
-```const ``` <span style="color:lime">**enav**</span> ``` = new ElectronNavigation();```
+> You can control the webviews and tabs using the object variable you created.   
+```const ``` <span style="color:red">**enav**</span> ``` = new ElectronNavigation();```
 
-**.newTab ( url , { options } )** 
+### **.newTab ( url , { options } )**
+<details>
+<summary>Details ( click to expand )</summary>
+
 > **url** [*required*] - specifies the location of the webview. Will auto add an HTTP protocol if a domain is specified. Otherwise it will perform a google search.
 > ```javascript
 > "http://github.com/" // "http://github.com/"
@@ -288,30 +356,36 @@ You can control the views and tabs using the object variable you created.
 > }
 >```
 
-**.changeTab ( url , id )**
+</details>
+
+### **.changeTab ( url , id )**
+
 > **url** [*required*] - specifies the new location of the webview. Has the same auto features as *newTab()*.  
 > 
 > **id** [*optional*] - changes the source of the webview with the id specified in *newTab()*. If no id is given the active tab and view are affected. Will console.log an error if the id doesn't exist.
 
-**.closeTab ( id )**
+### **.closeTab ( id )**
 > **id** [*optional*] - closes the tab and webview with the id specified in *newTab()*. If no id is given the active tab and view are affected. Will console.log an error if the id doesn't exist.
 
-**.back ( id )**
+### **.back ( id )**
 > **id** [*optional*] - goes back on the webview with the id specified in *newTab()*. If no id is given the active tab and view are affected. Will console.log an error if the id doesn't exist.
 
-**.forward ( id )**
+### **.forward ( id )**
 > **id** [*optional*] - goes forward on the webview with the id specified in *newTab()*. If no id is given the active tab and view are affected. Will console.log an error if the id doesn't exist.
 
-**.reload ( id )**
+### **.reload ( id )**
 > **id** [*optional*] - reloads the webview with the id specified in *newTab()*. If no id is given the active tab and view are affected. Will console.log an error if the id doesn't exist.
 
-**.stop ( id )**
+### **.stop ( id )**
 > **id** [*optional*] - stops loading the webview with the id specified in *newTab()*. If no id is given the active tab and view are affected. Will console.log an error if the id doesn't exist.
 
-**.openDevTools ( id )**
+### **.openDevTools ( id )**
 > **id** [*optional*] - opens the developer tools for the webview with the id specified in *newTab()*. If no id is given the active tab and view are affected. Will console.log an error if the id doesn't exist.
 
-**.send ( id, channel, args )**
+### **.send ( id, channel, args )**
+<details>
+<summary>Details ( click to expand )</summary>
+
 > **id** - sends a message to the webview with the id specified in *newTab()*. Will console.log an error if the id doesn't exist.  
 >
 > **channel** - a channel name of your choosing to keep track of messages.  
@@ -322,7 +396,12 @@ You can control the views and tabs using the object variable you created.
 >```
 > * See `test/parent-main.html` & `test/child-local.html` for examples.
 
-**.listen ( id, callback )**
+</details>
+
+### **.listen ( id, callback )**
+<details>
+<summary>Details ( click to expand )</summary>
+
 > **id** - listens for a message from the webview with the id specified in *newTab()*. Will console.log an error if the id doesn't exist.  
 >
 > **callback** ( channel, args, respond ) - a function that returns info from a webview message.
@@ -345,9 +424,11 @@ You can control the views and tabs using the object variable you created.
 >>```
 > * See `test/parent-main.html` & `test/child-local.html` for examples.
 
+</details>
 
-Example: `index.html`
 ```html
+EXAMPLE: index.html
+
 <script>   
     // create object
     const enav = new (require('electron-navigation'))({ 
@@ -379,7 +460,18 @@ Example: `index.html`
 </script>
 ```
 
-### Requests | Issues | Clone
+<p align="center" style="color:black;">
+    <a href="#setup" style="color:grey;">SETUP</a> |
+    <a href="#usage" style="color:grey;">USAGE</a> |
+    <a href="#themes" style="color:grey;">THEME</a> |
+    <a href="#options" style="color:grey;">OPTIONS</a> |
+    <a href="#methods" style="color:grey;">METHODS</a> |
+    <a href="#more" style="color:grey;">MORE</a> |
+    <a href="#history" style="color:grey;">HISTORY</a> |
+    <a href="#meta" style="color:grey;">CONTACT</a>
+</p>
+
+## Requests | Issues | Clone <a name="more"></a>
 ---
 > Looking to add functionality to this project, report a bug, or just have a question? Submit a [request](https://github.com/simply-coded/electron-navigation/issues), or clone the project and do it yourself.
 
@@ -387,19 +479,35 @@ Example: `index.html`
 git clone https://github.com/simply-coded/electron-navigation.git
 ```
 
-After you've cloned the project you can run the demos with npm.
+> After you've cloned the project you can run the demos with npm.
 ```
 npm test
 ```
 
-### History
+<p align="center" style="color:black;">
+    <a href="#setup" style="color:grey;">SETUP</a> |
+    <a href="#usage" style="color:grey;">USAGE</a> |
+    <a href="#themes" style="color:grey;">THEME</a> |
+    <a href="#options" style="color:grey;">OPTIONS</a> |
+    <a href="#methods" style="color:grey;">METHODS</a> |
+    <a href="#more" style="color:grey;">MORE</a> |
+    <a href="#history" style="color:grey;">HISTORY</a> |
+    <a href="#meta" style="color:grey;">CONTACT</a>
+</p>
+
+## History
 ---
+* 1.5.2
+    * `CHANGE` - made it easier to navigate **README.md**
 * 1.5.1
     * `CHANGE` - the *newTab()* function now returns the webview that it creates. This was in response to a request to allow plugins in the webviews. An example of how to use this was added to the **README.md** and **demo-light.html**. 
 * 1.5.0
     * `ADD` - *send()*, *listen()*, and *openDevTools()* functions for easier local HTML communication.
     * `CHANGE` - test folder file names and contents to reflect the latest features.
     * `CHANGE` - update **README.md** with new functions.
+<details>
+<summary>view more...</summary>
+
 * 1.4.2
     * `CHANGE` - renamed the preview files to be more clear on what they are.
     * `CHANGE` - replaced the live preview with one that shows a local file example.
@@ -447,7 +555,20 @@ npm test
 * 1.0.0
 	* `ADD` - initial release.
 
-### Meta
+</details>
+
+<p align="center" style="color:black;">
+    <a href="#setup" style="color:grey;">SETUP</a> |
+    <a href="#usage" style="color:grey;">USAGE</a> |
+    <a href="#themes" style="color:grey;">THEME</a> |
+    <a href="#options" style="color:grey;">OPTIONS</a> |
+    <a href="#methods" style="color:grey;">METHODS</a> |
+    <a href="#more" style="color:grey;">MORE</a> |
+    <a href="#history" style="color:grey;">HISTORY</a> |
+    <a href="#meta" style="color:grey;">CONTACT</a>
+</p>
+
+## Meta
 ---
 
 Jeremy England - [simplycoded.help@gmail.com](mailto:simplycoded.help@gmail.com)
