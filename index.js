@@ -291,6 +291,7 @@ function Navigation(options) {
                 )
             }
         })
+        return webview[0]
     } //:_addEvents()
 } //:Navigation()
 /**
@@ -367,8 +368,7 @@ Navigation.prototype.newTab = function (url, options) {
             $('#nav-body-views').append('<webview id="' + options.id + '" class="nav-views-view active" data-session="' + this.SESSION_ID + '" src="' + this._purifyUrl(url) + '"></webview>')
         }
     }
-    this._addEvents(this.SESSION_ID, options.icon, options.title)
-    this.SESSION_ID++
+    return this._addEvents(this.SESSION_ID++, options.icon, options.title)    
 } //:newTab()
 //
 // change current or specified tab and view

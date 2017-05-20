@@ -240,7 +240,7 @@ Example: `index.html`
 You can control the views and tabs using the object variable you created.   
 ```const ``` <span style="color:lime">**enav**</span> ``` = new ElectronNavigation();```
 
-**.newTab ( url , { options } )**  
+**.newTab ( url , { options } )** 
 > **url** [*required*] - specifies the location of the webview. Will auto add an HTTP protocol if a domain is specified. Otherwise it will perform a google search.
 > ```javascript
 > "http://github.com/" // "http://github.com/"
@@ -273,7 +273,20 @@ You can control the views and tabs using the object variable you created.
 >     title: "default",   
 >     close: true         
 > }
-> ``` 
+> ```
+> **return** - The *webview* Element object. Allows you to use the properties and methods as described here [Element API](https://developer.mozilla.org/en-US/docs/Web/API/Element).
+>```javascript
+> // Example on how to allow plugins
+> var google = enav.newTab('http://www.google.com/')
+> google.setAttribute('plugins', '')
+>
+> // Check if it has node integration
+> if (google.hasAttribute('nodeintegration')) {
+>    alert('yes, you can use node in this tab.')
+> } else {
+>    alert('no, you cannot use node in this tab.')   
+> }
+>```
 
 **.changeTab ( url , id )**
 > **url** [*required*] - specifies the new location of the webview. Has the same auto features as *newTab()*.  
@@ -381,6 +394,8 @@ npm test
 
 ### History
 ---
+* 1.5.1
+    * `CHANGE` - the *newTab()* function now returns the webview that it creates. This was in response to a request to allow plugins in the webviews. An example of how to use this was added to the **README.md** and **demo-light.html**. 
 * 1.5.0
     * `ADD` - *send()*, *listen()*, and *openDevTools()* functions for easier local HTML communication.
     * `CHANGE` - test folder file names and contents to reflect the latest features.

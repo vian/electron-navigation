@@ -34,8 +34,18 @@
         const enav = new (require('../index.js'))()
         
 
-        // create new tab
-        enav.newTab('google.com', { id: 'srch' } )
+        // create new tab, returns the webview element
+        var google = enav.newTab('google.com', { id: 'srch'} )
+        
+        // allow plugins
+        google.setAttribute('plugins', '')
+
+        // check if webview has an attribute
+        if (google.hasAttribute('nodeintegration')) {
+            alert('yes, you can use node in this tab.')
+        } else {
+            alert('no, you cannot use node in this tab.')   
+        }
 
         // open developer tools for webview ID of 'srch'
         enav.openDevTools('srch')
