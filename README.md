@@ -1,7 +1,7 @@
 # electron-navigation
 ![version](https://img.shields.io/npm/v/electron-navigation.svg?style=flat-square)![downloads](https://img.shields.io/npm/dt/electron-navigation.svg?style=flat-square)![license](https://img.shields.io/npm/l/electron-navigation.svg?style=flat-square)
 
-## Adds a navigation interface to electron that allows you to browse the internet or view local html files with tabs and webviews.
+## Adds a navigation interface to Electron that allows you to browse the internet or view local HTML files with tabs and webviews.
 
 ![](previews/light-theme.PNG)![](previews/in-action.gif)
 
