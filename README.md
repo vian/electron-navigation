@@ -497,6 +497,8 @@ npm test
 
 ## History
 ---
+* 1.5.3
+    * `REMOVE` - removed the node_modules folder from source.
 * 1.5.2
     * `CHANGE` - made it easier to navigate **README.md**
 * 1.5.1
