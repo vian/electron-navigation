@@ -573,6 +573,6 @@ npm test
 ## Meta
 ---
 
-Jeremy England - [simplycoded.help@gmail.com](mailto:simplycoded.help@gmail.com)
+Jeremy England ( SimplyCoded ) - [simplycoded.help@gmail.com](mailto:simplycoded.help@gmail.com)
 
 Distributed under the MIT license. See [`LICENSE`](https://spdx.org/licenses/MIT.html) for more information.
