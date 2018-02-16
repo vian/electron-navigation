@@ -104,7 +104,7 @@ function Navigation(options) {
             .addClass('active')
 
         var session = $('.nav-views-view[data-session="' + sessionID + '"]')[0]
-        $('#nav-ctrls-url').prop('value', session.getURL())
+        this._updateUrl(session.getURL())
         NAV._updateCtrls(session)
         //
         // close tab and view
@@ -119,7 +119,7 @@ function Navigation(options) {
             } else {
                 session.prev().addClass('active')
             }
-            $('#nav-ctrls-url').prop('value', '')
+            this._updateUrl()
         }
         session.remove()
         return false
@@ -261,8 +261,11 @@ function Navigation(options) {
         webview.on('load-commit', function () {
             NAV._updateCtrls(webview[0])
             if (!$('#nav-ctrls-url').is(':focus')) {
-                $('#nav-ctrls-url').attr('value', webview[0].getURL())
+                this._updateUrl(webview[0].getURL())
             }
+        })
+        webview.on('did-get-redirect-request', function () {
+          this._updateUrl(webview[0].getURL())
         })
         webview[0].addEventListener('new-window', (res) => {
             NAV.newTab(res.url, {
@@ -293,6 +296,20 @@ function Navigation(options) {
         })
         return webview[0]
     } //:_addEvents()
+    //
+    // update #nav-ctrls-url to given url or active tab's url
+    //
+    this._updateUrl = function (url) {
+      url = url || null
+
+      if (url == null) {
+        sessionID = $('.nav-tabs-tab.active, .nav-views-view.active').data('session')
+        activeWebview = $('.nav-views-view[data-session="' + sessionID + '"]')[0]
+        url = activeWebview.getURL()
+      }
+
+      $('#nav-ctrls-url').prop('value', url)
+    } //:_updateUrl()
 } //:Navigation()
 /**
  * PROTOTYPES
@@ -368,7 +385,8 @@ Navigation.prototype.newTab = function (url, options) {
             $('#nav-body-views').append('<webview id="' + options.id + '" class="nav-views-view active" data-session="' + this.SESSION_ID + '" src="' + this._purifyUrl(url) + '"></webview>')
         }
     }
-    return this._addEvents(this.SESSION_ID++, options.icon, options.title)    
+    $('#nav-ctrls-url').val(this._purifyUrl(url))
+    return this._addEvents(this.SESSION_ID++, options.icon, options.title)
 } //:newTab()
 //
 // change current or specified tab and view
@@ -377,6 +395,7 @@ Navigation.prototype.changeTab = function (url, id) {
     id = id || null
     if (id == null) {
         $('.nav-views-view.active').attr('src', this._purifyUrl(url))
+        this._updateUrl(this._purifyUrl(url))
     } else {
         if ($('#' + id).length) {
             $('#' + id).attr('src', this._purifyUrl(url))
@@ -410,7 +429,7 @@ Navigation.prototype.closeTab = function (id) {
         session.prev().addClass('active')
     }
 
-    $('#nav-ctrls-url').attr('value', '')
+    this._updateUrl()
     session.remove()
 } //:closeTab()
 //
