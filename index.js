@@ -104,7 +104,7 @@ function Navigation(options) {
             .addClass('active')
 
         var session = $('.nav-views-view[data-session="' + sessionID + '"]')[0]
-        $('#nav-ctrls-url').prop('value', session.getURL())
+        NAV._updateUrl(session.getURL())
         NAV._updateCtrls(session)
         //
         // close tab and view
@@ -119,7 +119,7 @@ function Navigation(options) {
             } else {
                 session.prev().addClass('active')
             }
-            $('#nav-ctrls-url').prop('value', '')
+            NAV._updateUrl('')
         }
         session.remove()
         return false
@@ -261,12 +261,12 @@ function Navigation(options) {
         webview.on('load-commit', function () {
             NAV._updateCtrls(webview[0])
         })
-        webview[0].addEventListener('did-navigate', (function (res) {
-          this._updateUrl(res.url)
-        }).bind(this))
-        webview[0].addEventListener('did-navigate-in-page', (function (res) {
-          this._updateUrl(res.url)
-        }).bind(this))
+        webview[0].addEventListener('did-navigate', function (res) {
+          NAV._updateUrl(res.url)
+        })
+        webview[0].addEventListener('did-navigate-in-page', function (res) {
+          NAV._updateUrl(res.url)
+        })
         webview[0].addEventListener('new-window', (res) => {
             NAV.newTab(res.url, {
                 icon: NAV.TAB_ICON
@@ -311,9 +311,16 @@ function Navigation(options) {
 
       if (!$ctrlsUrl.is(':focus')) {
         $ctrlsUrl.prop('value', url)
+        $ctrlsUrl.data('last', url)
       } else {
         $ctrlsUrl.on('blur', function () {
-          $ctrlsUrl.prop('value', url)
+          urlNotEdited = $ctrlsUrl.val() == $ctrlsUrl.data('last')
+          if (urlNotEdited) {
+            $ctrlsUrl.prop('value', url)
+            $ctrlsUrl.data('last', url)
+          }
+
+          $ctrlsUrl.off('blur')
         })
       }
     } //:_updateUrl()
@@ -392,7 +399,7 @@ Navigation.prototype.newTab = function (url, options) {
             $('#nav-body-views').append('<webview id="' + options.id + '" class="nav-views-view active" data-session="' + this.SESSION_ID + '" src="' + this._purifyUrl(url) + '"></webview>')
         }
     }
-    $('#nav-ctrls-url').val(this._purifyUrl(url))
+    this._updateUrl(this._purifyUrl(url))
     return this._addEvents(this.SESSION_ID++, options.icon, options.title)
 } //:newTab()
 //
