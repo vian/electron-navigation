@@ -304,7 +304,11 @@ function Navigation(options) {
       $ctrlsUrl = $('#nav-ctrls-url')
 
       if (url == null) {
-        url = $('.nav-views-view.active')[0].getURL()
+        if ($('.nav-views-view').length) {
+          url = $('.nav-views-view.active')[0].getURL()
+        } else {
+          url = ''
+        }
       }
 
       $ctrlsUrl.off('blur')
@@ -315,6 +319,7 @@ function Navigation(options) {
       } else {
         $ctrlsUrl.on('blur', function () {
           urlNotEdited = $ctrlsUrl.val() == $ctrlsUrl.data('last')
+
           if (urlNotEdited) {
             $ctrlsUrl.prop('value', url)
             $ctrlsUrl.data('last', url)
@@ -442,8 +447,8 @@ Navigation.prototype.closeTab = function (id) {
         session.prev().addClass('active')
     }
 
-    this._updateUrl()
     session.remove()
+    this._updateUrl()
 } //:closeTab()
 //
 // go back on current or specified view
