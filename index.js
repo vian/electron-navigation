@@ -21,6 +21,7 @@
  */
 var $ = require('jquery')
 var Color = require('color.js')
+const contextMenu = require('electron-context-menu')
 /**
  * OBJECT
  */
@@ -76,7 +77,7 @@ function Navigation(options) {
         $('#nav-body-ctrls').append('<i id="nav-ctrls-reload" class="nav-icons" title="Reload page">' + this.SVG_RELOAD + '</i>')
     }
     if (options.showUrlBar) {
-        $('#nav-body-ctrls').append('<input id="nav-ctrls-url" type="text" title="Enter an address or search term"/>')
+        $('#nav-body-ctrls').append('<input id="nav-ctrls-url" type="text" title="Enter an address or search term" ' + (options.readonly ? 'readonly' : '') + '/>')
     }
     if (options.showAddTabButton) {
         $('#nav-body-tabs').append('<i id="nav-tabs-add" class="nav-icons" title="Add new tab">' + this.SVG_ADD + '</i>')
@@ -105,7 +106,18 @@ function Navigation(options) {
 
         var session = $('.nav-views-view[data-session="' + sessionID + '"]')[0]
         $('#nav-ctrls-url').prop('value', session.getURL())
-        NAV._updateCtrls(session)
+        NAV._updateCtrls(session);
+        // get options
+        var opts = JSON.parse(decodeURIComponent($(session).attr('data-options-json')));
+
+        // is readonly tab?
+        if (opts.readonly)
+            $('#nav-ctrls-url').attr('readonly', 'readonly')
+        else
+            $('#nav-ctrls-url').removeAttr('readonly')
+
+        // listener for when tabs are activated
+        if (NAV.onActivateTab) NAV.onActivateTab(session, opts);
         //
         // close tab and view
         //
@@ -261,7 +273,7 @@ function Navigation(options) {
         webview.on('load-commit', function () {
             NAV._updateCtrls(webview[0])
             if (!$('#nav-ctrls-url').is(':focus')) {
-                $('#nav-ctrls-url').attr('value', webview[0].getURL())
+                $('#nav-ctrls-url').val(webview[0].getURL())
             }
         })
         webview[0].addEventListener('new-window', (res) => {
@@ -306,7 +318,9 @@ Navigation.prototype.newTab = function (url, options) {
         node: false, // true, false
         icon: "clean", // 'default', 'clean', 'c:\custom.png'
         title: "default", // 'default', 'custom'
-        close: true // true, false        
+        close: true, // true, false        
+        readonly: false,
+        contextMenu: true
     }
     if (options === 'undefined' || options === 'null' || options !== Object(options)) {
         options = {}
@@ -354,21 +368,42 @@ Navigation.prototype.newTab = function (url, options) {
     } else {
         $('#nav-body-tabs').append(tab)
     }
-    // id
-    if (options.id == null) {
-        if (options.node) {
-            $('#nav-body-views').append('<webview class="nav-views-view active" data-session="' + this.SESSION_ID + '" src="' + this._purifyUrl(url) + '" nodeintegration></webview>')
-        } else {
-            $('#nav-body-views').append('<webview class="nav-views-view active" data-session="' + this.SESSION_ID + '" src="' + this._purifyUrl(url) + '"></webview>')
-        }
-    } else {
-        if (options.node) {
-            $('#nav-body-views').append('<webview id="' + options.id + '" class="nav-views-view active" data-session="' + this.SESSION_ID + '" src="' + this._purifyUrl(url) + '" nodeintegration></webview>')
-        } else {
-            $('#nav-body-views').append('<webview id="' + options.id + '" class="nav-views-view active" data-session="' + this.SESSION_ID + '" src="' + this._purifyUrl(url) + '"></webview>')
-        }
+    // add webview
+    var webV = $(`<webview ${options.id ? 'id="' + options.id + '"' : ''} class="nav-views-view active" 
+    data-session="${this.SESSION_ID}" src="${this._purifyUrl(url)}" ${options.node ? 'nodeintegration' : ''}
+    data-options-json="${encodeURIComponent(JSON.stringify(options))}"
+    ></webview>`);
+    $('#nav-body-views').append(webV);
+    if (options.readonly)
+        $('#nav-ctrls-url').attr('readonly', 'readonly')
+    else
+        $('#nav-ctrls-url').removeAttr('readonly')
+
+    // add context menu
+    if (options.contextMenu) {
+        var webVRaw = webV[0];
+        webVRaw.addEventListener("dom-ready", function () {
+            console.log("DOM-Ready, triggering events !");
+            webVRaw.send("request");
+            contextMenu({
+                window: webVRaw,
+                prepend: (params, browserWindow) => [{
+                    label: 'Rainbow',
+                    // Only show it when right-clicking images
+                    visible: params.mediaType === 'image'
+                }]
+                // ,labels: {
+                //   cut: 'Configured Cut',
+                //   copy: 'Configured Copy',
+                //   paste: 'Configured Paste',
+                //   save: 'Configured Save Image',
+                //   copyLink: 'Configured Copy Link',
+                //   inspect: 'Configured Inspect'
+                // }
+            });
+        });
     }
-    return this._addEvents(this.SESSION_ID++, options.icon, options.title)    
+    return this._addEvents(this.SESSION_ID++, options.icon, options.title)
 } //:newTab()
 //
 // change current or specified tab and view
@@ -476,44 +511,44 @@ Navigation.prototype.stop = function (id) {
 //
 // listen for a message from webview
 //
-Navigation.prototype.listen = function (id, callback) {    
+Navigation.prototype.listen = function (id, callback) {
     let webview = null
 
     //check id
     if ($('#' + id).length) {
         webview = document.getElementById(id)
-    } else {            
+    } else {
         console.log('ERROR[electron-navigation][func "listen();"]: Cannot find the ID "' + id + '"')
     }
-    
+
     // listen for message
     if (webview != null) {
         try {
-            webview.addEventListener('ipc-message', (event) => {                    
+            webview.addEventListener('ipc-message', (event) => {
                 callback(event.channel, event.args, webview);
             })
         } catch (e) {
             webview.addEventListener("dom-ready", function (event) {
-                webview.addEventListener('ipc-message', (event) => {                    
+                webview.addEventListener('ipc-message', (event) => {
                     callback(event.channel, event.args, webview);
-                })             
+                })
             })
-        }        
-    } 
+        }
+    }
 } //:listen()
 //
 // send message to webview
 //
-Navigation.prototype.send = function (id, channel, args) {    
+Navigation.prototype.send = function (id, channel, args) {
     let webview = null
 
     // check id
     if ($('#' + id).length) {
         webview = document.getElementById(id)
-    } else {            
+    } else {
         console.log('ERROR[electron-navigation][func "send();"]: Cannot find the ID "' + id + '"')
     }
-    
+
     // send a message
     if (webview != null) {
         try {
@@ -522,13 +557,13 @@ Navigation.prototype.send = function (id, channel, args) {
             webview.addEventListener("dom-ready", function (event) {
                 webview.send(channel, args)
             })
-        }        
-    } 
+        }
+    }
 } //:send()
 //
 // open developer tools of current or ID'd webview
 //
-Navigation.prototype.openDevTools = function(id) {
+Navigation.prototype.openDevTools = function (id) {
     id = id || null
     let webview = null
 
@@ -538,11 +573,11 @@ Navigation.prototype.openDevTools = function(id) {
     } else {
         if ($('#' + id).length) {
             webview = document.getElementById(id)
-        } else {            
+        } else {
             console.log('ERROR[electron-navigation][func "openDevTools();"]: Cannot find the ID "' + id + '"')
         }
     }
-    
+
     // open dev tools
     if (webview != null) {
         try {
@@ -551,8 +586,8 @@ Navigation.prototype.openDevTools = function(id) {
             webview.addEventListener("dom-ready", function (event) {
                 webview.openDevTools()
             })
-        }        
-    }    
+        }
+    }
 } //:openDevTools()
 /**
  * MODULE EXPORTS 

@@ -320,6 +320,10 @@ EXAMPLE: index.html
 >> 
 >> { **node** : *boolean* } - allows the webview to use Node.js, and is only recommended for local files. Defaults to **false**.
 >>
+>> { **readonly** : *boolean* } - sets the main URL textInput to readonly mode on this tab. Defaults to **false**.
+>>
+>> { **contextMenu** : *boolean* } - enables right-click context menu (by [electron-context-menu](https://github.com/sindresorhus/electron-context-menu)). Defaults to **true**.
+>>
 >> { **icon** : *string* } - changes the favicon. Defaults to **"clean"**.
 >> ```javascript
 >> icon: "default" // uses the regular favicon.
