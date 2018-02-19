@@ -497,6 +497,8 @@ npm test
 
 ## History
 ---
+* 1.5.4
+    * `CHANGE` - fixed url not updating correctly thanks to github user [akz92](https://github.com/akz92)
 * 1.5.3
     * `REMOVE` - removed the node_modules folder from source.
 * 1.5.2
