@@ -49,7 +49,7 @@ npm i electron-navigation
       "description": "",
       "main": "main.js",
       "scripts": {
-        "start": "electron ."
+        "start": "node_modules\\electron\\dist\\electron ."
       },
       "author": "",
       "license": "ISC"
@@ -499,6 +499,9 @@ npm test
 ---
 * 1.5.4
     * `CHANGE` - fixed url not updating correctly thanks to github user [akz92](https://github.com/akz92)
+    * `ADD` - goToTab( index ) method added thanks to github user [akz92](https://github.com/akz92). README.md docs will be added in the future.
+    * `CHANGE` - fixed closableTabs options not overriding the newTab close options object thanks to github user LightningBladeXYZ for pointing it out.
+    * `ADD` - semicolonified the file for easier minimization.    
 * 1.5.3
     * `REMOVE` - removed the node_modules folder from source.
 * 1.5.2
