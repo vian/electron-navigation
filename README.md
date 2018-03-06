@@ -49,7 +49,7 @@ npm i electron-navigation
       "description": "",
       "main": "main.js",
       "scripts": {
-        "start": "electron ."
+        "start": "node_modules\\electron\\dist\\electron ."
       },
       "author": "",
       "license": "ISC"
@@ -386,6 +386,14 @@ EXAMPLE: index.html
 ### **.openDevTools ( id )**
 > **id** [*optional*] - opens the developer tools for the webview with the id specified in *newTab()*. If no id is given the active tab and view are affected. Will console.log an error if the id doesn't exist.
 
+### **.printTab ( id, opts )**
+> **id** [*optional*] - trigger electron print for the webview with the id specified in *newTab()*. If no id is given the active tab and view are affected. Will console.log an error if the id doesn't exist.
+
+> **opts** [*optional*] - electron print options, if nothing is passed the default print dialog will show up. 
+>  * `silent` Boolean [*optional*] - Don't ask user for print settings. Default is `false`.
+>  * `printBackground` Boolean [*optional*] - Also prints the background color and image of the web page. Default is `false`.
+>  * `deviceName` String [*optional*] - Set the printer device name to use. Default is `''`.
+
 ### **.nextTab (  )**
 > switch focus to next available tab (goes to the first one if the last is active)
 
@@ -507,6 +515,11 @@ npm test
 
 ## History
 ---
+* 1.5.4
+    * `CHANGE` - fixed url not updating correctly thanks to github user [akz92](https://github.com/akz92)
+    * `ADD` - goToTab( index ) method added thanks to github user [akz92](https://github.com/akz92). README.md docs will be added in the future.
+    * `CHANGE` - fixed closableTabs options not overriding the newTab close options object thanks to github user LightningBladeXYZ for pointing it out.
+    * `ADD` - semicolonified the file for easier minimization.    
 * 1.5.3
     * `REMOVE` - removed the node_modules folder from source.
 * 1.5.2

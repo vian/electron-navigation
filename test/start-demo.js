@@ -5,6 +5,7 @@ const {
 
 let demoLight;
 let demoDark;
+let demoChrome;
 
 app.on('ready', () => {
 
@@ -14,6 +15,10 @@ app.on('ready', () => {
 
     demoDark = new BrowserWindow()    
     demoDark.loadURL(`file:///${__dirname}/parent-main.html`)
-    demoDark.on('close', () => { demoDark = null })    
+    demoDark.on('close', () => { demoDark = null })  
+    
+    demoChrome = new BrowserWindow()    
+    demoChrome.loadURL(`file:///${__dirname}/demo-chrome.html`)
+    demoChrome.on('close', () => { demoChrome = null })    
 
 });
