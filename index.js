@@ -473,12 +473,12 @@ Navigation.prototype.newTab = function (url, options) {
                 //     //visible: params.mediaType === 'image'
                 // }],
                 labels: {
-                    cut: 'Cortar',
-                    copy: 'Copiar',
-                    paste: 'Colar',
-                    save: 'Salvar',
-                    copyLink: 'Copiar Link',
-                    inspect: 'Inspecionar'
+                    cut: 'Cut',
+                    copy: 'Copy',
+                    paste: 'Paste',
+                    save: 'Save',
+                    copyLink: 'Copy Link',
+                    inspect: 'Inspect'
                 }
             });
         });
