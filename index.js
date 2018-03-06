@@ -387,19 +387,19 @@ Navigation.prototype.newTab = function (url, options) {
             webVRaw.send("request");
             contextMenu({
                 window: webVRaw,
-                prepend: (params, browserWindow) => [{
-                    label: 'Rainbow',
-                    // Only show it when right-clicking images
-                    visible: params.mediaType === 'image'
-                }]
-                // ,labels: {
-                //   cut: 'Configured Cut',
-                //   copy: 'Configured Copy',
-                //   paste: 'Configured Paste',
-                //   save: 'Configured Save Image',
-                //   copyLink: 'Configured Copy Link',
-                //   inspect: 'Configured Inspect'
-                // }
+                // prepend: (params, browserWindow) => [{
+                //     //label: 'Rainbow',
+                //     // Only show it when right-clicking images
+                //     //visible: params.mediaType === 'image'
+                // }],
+                labels: {
+                    cut: 'Cortar',
+                    copy: 'Copiar',
+                    paste: 'Colar',
+                    save: 'Salvar',
+                    copyLink: 'Copiar Link',
+                    inspect: 'Inspecionar'
+                }
             });
         });
     }
@@ -589,6 +589,53 @@ Navigation.prototype.openDevTools = function (id) {
         }
     }
 } //:openDevTools()
+//
+// print current or specified tab and view
+//
+Navigation.prototype.printTab = function (id, opts) {
+    id = id || null
+    let webview = null
+
+    // check id
+    if (id == null) {
+        webview = $('.nav-views-view.active')[0]
+    } else {
+        if ($('#' + id).length) {
+            webview = document.getElementById(id)
+        } else {
+            console.log('ERROR[electron-navigation][func "printTab();"]: Cannot find the ID "' + id + '"')
+        }
+    }
+
+    // print
+    if (webview != null) {
+        webview.print(opts || {});
+    }
+} 
+//:nextTab()
+//
+// toggle next available tab
+//
+Navigation.prototype.nextTab = function () {
+    var tabs = $('.nav-tabs-tab').toArray();
+    var activeTabIndex = tabs.indexOf($('.nav-tabs-tab.active')[0]);
+    var nexti = activeTabIndex + 1;
+    if(nexti > tabs.length-1) nexti = 0;
+    $($('.nav-tabs-tab')[nexti]).trigger('click');
+    return false
+} //:nextTab()
+//:prevTab()
+//
+// toggle previous available tab
+//
+Navigation.prototype.prevTab = function () {
+    var tabs = $('.nav-tabs-tab').toArray();
+    var activeTabIndex = tabs.indexOf($('.nav-tabs-tab.active')[0]);
+    var nexti = activeTabIndex - 1;
+    if(nexti < 0) nexti = tabs.length-1;
+    $($('.nav-tabs-tab')[nexti]).trigger('click');
+    return false
+} //:prevTab()
 /**
  * MODULE EXPORTS 
  */

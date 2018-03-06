@@ -386,6 +386,12 @@ EXAMPLE: index.html
 ### **.openDevTools ( id )**
 > **id** [*optional*] - opens the developer tools for the webview with the id specified in *newTab()*. If no id is given the active tab and view are affected. Will console.log an error if the id doesn't exist.
 
+### **.nextTab (  )**
+> switch focus to next available tab (goes to the first one if the last is active)
+
+### **.prevTab (  )**
+> switch focus to previous available tab (goes to the last one if the first is active)
+
 ### **.send ( id, channel, args )**
 <details>
 <summary>Details ( click to expand )</summary>
