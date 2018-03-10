@@ -320,6 +320,10 @@ EXAMPLE: index.html
 >> 
 >> { **node** : *boolean* } - allows the webview to use Node.js, and is only recommended for local files. Defaults to **false**.
 >>
+>> { **readonly** : *boolean* } - sets the main URL textInput to readonly mode on this tab. Defaults to **false**.
+>>
+>> { **contextMenu** : *boolean* } - enables right-click context menu (by [electron-context-menu](https://github.com/sindresorhus/electron-context-menu)). Defaults to **true**.
+>>
 >> { **webviewAttributes** : *object* } - Specifies additional attributes to pass to the webview tag. Defaults to **{}**.
 > ```javascript
 > // example for passing a custom user agent
@@ -389,6 +393,20 @@ EXAMPLE: index.html
 
 ### **.openDevTools ( id )**
 > **id** [*optional*] - opens the developer tools for the webview with the id specified in *newTab()*. If no id is given the active tab and view are affected. Will console.log an error if the id doesn't exist.
+
+### **.printTab ( id, opts )**
+> **id** [*optional*] - trigger electron print for the webview with the id specified in *newTab()*. If no id is given the active tab and view are affected. Will console.log an error if the id doesn't exist.
+
+> **opts** [*optional*] - electron print options, if nothing is passed the default print dialog will show up. 
+>  * `silent` Boolean [*optional*] - Don't ask user for print settings. Default is `false`.
+>  * `printBackground` Boolean [*optional*] - Also prints the background color and image of the web page. Default is `false`.
+>  * `deviceName` String [*optional*] - Set the printer device name to use. Default is `''`.
+
+### **.nextTab (  )**
+> switch focus to next available tab (goes to the first one if the last is active)
+
+### **.prevTab (  )**
+> switch focus to previous available tab (goes to the last one if the first is active)
 
 ### **.send ( id, channel, args )**
 <details>

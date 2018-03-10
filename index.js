@@ -22,6 +22,7 @@
 var $ = require('jquery');
 var Color = require('color.js');
 var urlRegex = require('url-regex');
+const contextMenu = require('electron-context-menu')
 var globalCloseableTabsOverride;
 /**
  * OBJECT
@@ -79,7 +80,7 @@ function Navigation(options) {
         $('#nav-body-ctrls').append('<i id="nav-ctrls-reload" class="nav-icons disabled" title="Reload page">' + this.SVG_RELOAD + '</i>');
     }
     if (options.showUrlBar) {
-        $('#nav-body-ctrls').append('<input id="nav-ctrls-url" type="text" title="Enter an address or search term"/>');
+        $('#nav-body-ctrls').append('<input id="nav-ctrls-url" type="text" title="Enter an address or search term" ' + (options.readonly ? 'readonly' : '') + '/>')
     }
     if (options.showAddTabButton) {
         $('#nav-body-tabs').append('<i id="nav-tabs-add" class="nav-icons" title="Add new tab">' + this.SVG_ADD + '</i>');
@@ -109,6 +110,16 @@ function Navigation(options) {
         var session = $('.nav-views-view[data-session="' + sessionID + '"]')[0];
         NAV._updateUrl(session.getURL());
         NAV._updateCtrls();
+        // get options
+        var opts = JSON.parse(decodeURIComponent($(session).attr('data-options-json')));
+        // is readonly tab?
+        if (opts.readonly)
+            $('#nav-ctrls-url').attr('readonly', 'readonly')
+        else
+            $('#nav-ctrls-url').removeAttr('readonly')
+        // listener for when tabs are activated
+        if (NAV.onActivateTab) NAV.onActivateTab(session, opts);
+
         //
         // close tab and view
         //
@@ -386,8 +397,10 @@ Navigation.prototype.newTab = function (url, options) {
         webviewAttributes: {},
         icon: "clean", // 'default', 'clean', 'c:\custom.png'
         title: "default", // 'default', 'custom'
-        close: true // true, false
-    };
+        close: true, // true, false        
+        readonly: false,
+        contextMenu: true
+    }
     if (options === 'undefined' || options === 'null' || options !== Object(options)) {
         options = {};
     }
@@ -434,6 +447,18 @@ Navigation.prototype.newTab = function (url, options) {
     } else {
         $('#nav-body-tabs').append(tab);
     }
+    // add webview
+    var webV = $(`<webview ${options.id ? 'id="' + options.id + '"' : ''} class="nav-views-view active" 
+    data-session="${this.SESSION_ID}" src="${this._purifyUrl(url)}" ${options.node ? 'nodeintegration' : ''}
+    data-options-json="${encodeURIComponent(JSON.stringify(options))}"
+    ></webview>`);
+    $('#nav-body-views').append(webV);
+    // url text input read only?
+    if (options.readonly)
+        $('#nav-ctrls-url').attr('readonly', 'readonly')
+    else
+        $('#nav-ctrls-url').removeAttr('readonly')
+   
     // id
     let composedWebviewTag = `<webview class="nav-views-view active" data-session="${this.SESSION_ID}" src="${this._purifyUrl(url)}"`;
     if(options.id){
@@ -448,7 +473,33 @@ Navigation.prototype.newTab = function (url, options) {
         });
     }
     $('#nav-body-views').append(`${composedWebviewTag}></webview>`);
+
+    // enable reload button
     $('#nav-ctrls-reload').removeClass('disabled');
+    // add context menu
+    if (options.contextMenu) {
+        var webVRaw = webV[0];
+        webVRaw.addEventListener("dom-ready", function () {
+            console.log("DOM-Ready, triggering events !");
+            webVRaw.send("request");
+            contextMenu({
+                window: webVRaw,
+                // prepend: (params, browserWindow) => [{
+                //     //label: 'Rainbow',
+                //     // Only show it when right-clicking images
+                //     //visible: params.mediaType === 'image'
+                // }],
+                labels: {
+                    cut: 'Cut',
+                    copy: 'Copy',
+                    paste: 'Paste',
+                    save: 'Save',
+                    copyLink: 'Copy Link',
+                    inspect: 'Inspect'
+                }
+            });
+        });
+    }
     this._updateUrl(this._purifyUrl(url));
     return this._addEvents(this.SESSION_ID++, options.icon, options.title);
 } //:newTab()
@@ -638,6 +689,52 @@ Navigation.prototype.openDevTools = function(id) {
     }
 } //:openDevTools()
 //
+// print current or specified tab and view
+//
+Navigation.prototype.printTab = function (id, opts) {
+    id = id || null
+    let webview = null
+
+    // check id
+    if (id == null) {
+        webview = $('.nav-views-view.active')[0]
+    } else {
+        if ($('#' + id).length) {
+            webview = document.getElementById(id)
+        } else {
+            console.log('ERROR[electron-navigation][func "printTab();"]: Cannot find the ID "' + id + '"')
+        }
+    }
+
+    // print
+    if (webview != null) {
+        webview.print(opts || {});
+    }
+} 
+//:nextTab()
+//
+// toggle next available tab
+//
+Navigation.prototype.nextTab = function () {
+    var tabs = $('.nav-tabs-tab').toArray();
+    var activeTabIndex = tabs.indexOf($('.nav-tabs-tab.active')[0]);
+    var nexti = activeTabIndex + 1;
+    if(nexti > tabs.length-1) nexti = 0;
+    $($('.nav-tabs-tab')[nexti]).trigger('click');
+    return false
+} //:nextTab()
+//:prevTab()
+//
+// toggle previous available tab
+//
+Navigation.prototype.prevTab = function () {
+    var tabs = $('.nav-tabs-tab').toArray();
+    var activeTabIndex = tabs.indexOf($('.nav-tabs-tab.active')[0]);
+    var nexti = activeTabIndex - 1;
+    if(nexti < 0) nexti = tabs.length-1;
+    $($('.nav-tabs-tab')[nexti]).trigger('click');
+    return false
+} //:prevTab()
 // go to a tab by index or keyword
 //
 Navigation.prototype.goToTab = function(index) {
