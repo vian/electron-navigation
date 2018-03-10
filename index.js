@@ -394,6 +394,7 @@ Navigation.prototype.newTab = function (url, options) {
     var defaults = {
         id: null, // null, 'custom'
         node: false, // true, false
+        webviewAttributes: {},
         icon: "clean", // 'default', 'clean', 'c:\custom.png'
         title: "default", // 'default', 'custom'
         close: true, // true, false        
@@ -457,6 +458,22 @@ Navigation.prototype.newTab = function (url, options) {
         $('#nav-ctrls-url').attr('readonly', 'readonly')
     else
         $('#nav-ctrls-url').removeAttr('readonly')
+   
+    // id
+    let composedWebviewTag = `<webview class="nav-views-view active" data-session="${this.SESSION_ID}" src="${this._purifyUrl(url)}"`;
+    if(options.id){
+        composedWebviewTag += ` id=${options.id}`;
+    }
+    if(options.node){
+        composedWebviewTag += " nodeintegration";
+    }
+    if (options.webviewAttributes) {
+        Object.keys(options.webviewAttributes).forEach((key) => {
+            composedWebviewTag += ` ${key}="${options.webviewAttributes[key]}"`;
+        });
+    }
+    $('#nav-body-views').append(`${composedWebviewTag}></webview>`);
+
     // enable reload button
     $('#nav-ctrls-reload').removeClass('disabled');
     // add context menu
