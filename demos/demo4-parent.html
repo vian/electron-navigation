@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>vertical demo</title>
+    <title>DEMO: Parent/Child Messages</title>
     <style>
         html,
         body {
@@ -83,11 +83,12 @@
             defaultFavicons: true
         })      
             
-        enav.newTab(`file:///${__dirname}/child-local.html`, {
+        enav.newTab(`file:///${__dirname}/demo4-child.html`, {
             id: "homePage",
             close: false,
             node: true,
-            icon: "home.ico"
+            icon: "demo4-icon.ico",
+            readonlyUrl: true
         })
 
         // 1.) send a message to the child (child-local.html)

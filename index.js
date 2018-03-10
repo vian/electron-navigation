@@ -2,7 +2,7 @@
  * @author      Jeremy England
  * @license     MIT
  * @description Adds tabs, views, and controls to specified containers in node.js electron.
- * @requires    electron, jquery, color.js
+ * @requires    electron, jquery, color.js, electron-context-menu, url-regex
  * @see         https://github.com/simply-coded/electron-navigation
  * @tutorial
  *  Add these IDs to your html (containers don't have to be divs).
@@ -45,7 +45,7 @@ function Navigation(options) {
         options = {};
     }
     for (var key in defaults) {
-    if (!(key in options)) {
+        if (!(key in options)) {
             options[key] = defaults[key];
         }
     }
@@ -60,7 +60,6 @@ function Navigation(options) {
     } else {
         this.TAB_ICON = "clean";
     }
-
     this.SVG_BACK = '<svg height="100%" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>';
     this.SVG_FORWARD = '<svg height="100%" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>';
     this.SVG_RELOAD = '<svg height="100%" viewBox="0 0 24 24" id="nav-ready"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/><path d="M0 0h24v24H0z" fill="none"/></svg>';
@@ -80,7 +79,7 @@ function Navigation(options) {
         $('#nav-body-ctrls').append('<i id="nav-ctrls-reload" class="nav-icons disabled" title="Reload page">' + this.SVG_RELOAD + '</i>');
     }
     if (options.showUrlBar) {
-        $('#nav-body-ctrls').append('<input id="nav-ctrls-url" type="text" title="Enter an address or search term" ' + (options.readonly ? 'readonly' : '') + '/>')
+        $('#nav-body-ctrls').append('<input id="nav-ctrls-url" type="text" title="Enter an address or search term"/>')
     }
     if (options.showAddTabButton) {
         $('#nav-body-tabs').append('<i id="nav-tabs-add" class="nav-icons" title="Add new tab">' + this.SVG_ADD + '</i>');
@@ -109,17 +108,8 @@ function Navigation(options) {
 
         var session = $('.nav-views-view[data-session="' + sessionID + '"]')[0];
         NAV._updateUrl(session.getURL());
-        NAV._updateCtrls();
-        // get options
-        var opts = JSON.parse(decodeURIComponent($(session).attr('data-options-json')));
-        // is readonly tab?
-        if (opts.readonly)
-            $('#nav-ctrls-url').attr('readonly', 'readonly')
-        else
-            $('#nav-ctrls-url').removeAttr('readonly')
-        // listener for when tabs are activated
-        if (NAV.onActivateTab) NAV.onActivateTab(session, opts);
-
+        NAV._updateCtrls();        
+        
         //
         // close tab and view
         //
@@ -207,7 +197,7 @@ function Navigation(options) {
      * FUNCTIONS
      */
     //
-    // update back and forward buttons
+    // update controls like back, forward, etc...
     //
     this._updateCtrls = function () {
         webview = $('.nav-views-view.active')[0];
@@ -228,10 +218,16 @@ function Navigation(options) {
             $('#nav-ctrls-forward').addClass('disabled');
         }
         if (webview.isLoading()) {
-          this._loading();
+            this._loading();
         } else {
-          this._stopLoading();
-        }
+            this._stopLoading();
+        }         
+        if (webview.getAttribute('data-readonly') == 'true') {
+            $('#nav-ctrls-url').attr('readonly', 'readonly');
+        } else {
+            $('#nav-ctrls-url').removeAttr('readonly');
+        }        
+
     } //:_updateCtrls()
     //
     // start loading animations
@@ -240,7 +236,7 @@ function Navigation(options) {
         tab = tab || null;
 
         if (tab == null) {
-          tab = $('.nav-tabs-tab.active');
+            tab = $('.nav-tabs-tab.active');
         }
 
         tab.find('.nav-tabs-favicon').css('animation', 'nav-spin 2s linear infinite');
@@ -253,7 +249,7 @@ function Navigation(options) {
         tab = tab || null;
 
         if (tab == null) {
-          tab = $('.nav-tabs-tab.active');
+            tab = $('.nav-tabs-tab.active');
         }
 
         tab.find('.nav-tabs-favicon').css('animation', '');
@@ -263,7 +259,10 @@ function Navigation(options) {
     // auto add http protocol to url input or do a search
     //
     this._purifyUrl = function (url) {
-        if(urlRegex({ strict: false, exact: true }).test(url)) {
+        if (urlRegex({
+                strict: false,
+                exact: true
+            }).test(url)) {
             url = (url.match(/^https?:\/\/.*/)) ? url : 'http://' + url;
         } else {
             url = (!url.match(/^[a-zA-Z]+:\/\//)) ? 'https://www.google.com/search?q=' + url.replace(' ', '+') : url;
@@ -285,12 +284,27 @@ function Navigation(options) {
     //
     // add event listeners to current webview
     //
-    this._addEvents = function (sessionID, favicon, title) {
-        var currtab = $('.nav-tabs-tab[data-session="' + sessionID + '"]');
-        var webview = $('.nav-views-view[data-session="' + sessionID + '"]');
+    this._addEvents = function (sessionID, options) {
+        let currtab = $('.nav-tabs-tab[data-session="' + sessionID + '"]');
+        let webview = $('.nav-views-view[data-session="' + sessionID + '"]');
 
+        webview.on('dom-ready', function () {
+            if (options.contextMenu) {
+                contextMenu({
+                    window: webview[0],
+                    labels: {
+                        cut: 'Cut',
+                        copy: 'Copy',
+                        paste: 'Paste',
+                        save: 'Save',
+                        copyLink: 'Copy Link',
+                        inspect: 'Inspect'
+                    }
+                });
+            }
+        });
         webview.on('page-title-updated', function () {
-            if (title == 'default') {
+            if (options.title == 'default') {
                 currtab.find('.nav-tabs-title').text(webview[0].getTitle());
                 currtab.find('.nav-tabs-title').attr('title', webview[0].getTitle());
             }
@@ -312,14 +326,14 @@ function Navigation(options) {
         webview.on('load-commit', function () {
             NAV._updateCtrls();
         });
-        webview[0].addEventListener('did-navigate', function (res) {
-          NAV._updateUrl(res.url);
+        webview[0].addEventListener('did-navigate', (res) => {
+            NAV._updateUrl(res.url);
         });
-        webview[0].addEventListener('did-fail-load', function (res) {
-          NAV._updateUrl(res.validatedUrl);
+        webview[0].addEventListener('did-fail-load', (res) => {
+            NAV._updateUrl(res.validatedUrl);
         });
-        webview[0].addEventListener('did-navigate-in-page', function (res) {
-          NAV._updateUrl(res.url);
+        webview[0].addEventListener('did-navigate-in-page', (res) => {
+            NAV._updateUrl(res.url);
         });
         webview[0].addEventListener('new-window', (res) => {
             NAV.newTab(res.url, {
@@ -327,13 +341,13 @@ function Navigation(options) {
             });
         });
         webview[0].addEventListener('page-favicon-updated', (res) => {
-            if (favicon == 'clean') {
+            if (options.icon == 'clean') {
                 NAV._setTabColor(res.favicons[0], currtab);
-            } else if (favicon == 'default') {
+            } else if (options.icon == 'default') {
                 currtab.find('.nav-tabs-favicon').attr('src', res.favicons[0]);
             }
         });
-        webview[0].addEventListener('did-fail-load', function (res) {
+        webview[0].addEventListener('did-fail-load', (res) => {
             if (res.validatedURL == $('#nav-ctrls-url').val() && res.errorCode != -3) {
                 this.executeJavaScript('document.body.innerHTML=' +
                     '<div style="background-color:whitesmoke;padding:40px;margin:20px;font-family:consolas;">' +
@@ -354,34 +368,29 @@ function Navigation(options) {
     // update #nav-ctrls-url to given url or active tab's url
     //
     this._updateUrl = function (url) {
-      url = url || null;
-      $ctrlsUrl = $('#nav-ctrls-url');
-
-      if (url == null) {
-        if ($('.nav-views-view').length) {
-          url = $('.nav-views-view.active')[0].getURL();
-        } else {
-          url = '';
+        url = url || null;
+        urlInput = $('#nav-ctrls-url');
+        if (url == null) {
+            if ($('.nav-views-view').length) {
+                url = $('.nav-views-view.active')[0].getURL();
+            } else {
+                url = '';
+            }
         }
-      }
-
-      $ctrlsUrl.off('blur');
-
-      if (!$ctrlsUrl.is(':focus')) {
-        $ctrlsUrl.prop('value', url);
-        $ctrlsUrl.data('last', url);
-      } else {
-        $ctrlsUrl.on('blur', function () {
-          urlNotEdited = $ctrlsUrl.val() == $ctrlsUrl.data('last');
-
-          if (urlNotEdited) {
-            $ctrlsUrl.prop('value', url);
-            $ctrlsUrl.data('last', url);
-          }
-
-          $ctrlsUrl.off('blur');
-        });
-      }
+        urlInput.off('blur');
+        if (!urlInput.is(':focus')) {
+            urlInput.prop('value', url);
+            urlInput.data('last', url);
+        } else {
+            urlInput.on('blur', function () {
+                // if url not edited
+                if (urlInput.val() == urlInput.data('last')) {
+                    urlInput.prop('value', url);
+                    urlInput.data('last', url);
+                }
+                urlInput.off('blur');
+            });
+        }
     } //:_updateUrl()
 } //:Navigation()
 /**
@@ -392,13 +401,13 @@ function Navigation(options) {
 //
 Navigation.prototype.newTab = function (url, options) {
     var defaults = {
-        id: null, // null, 'custom'
-        node: false, // true, false
+        id: null, // null, 'yourIdHere'
+        node: false,
         webviewAttributes: {},
-        icon: "clean", // 'default', 'clean', 'c:\custom.png'
-        title: "default", // 'default', 'custom'
-        close: true, // true, false        
-        readonly: false,
+        icon: "clean", // 'default', 'clean', 'c:\location\to\image.png'
+        title: "default", // 'default', 'your title here'
+        close: true,
+        readonlyUrl: false,
         contextMenu: true
     }
     if (options === 'undefined' || options === 'null' || options !== Object(options)) {
@@ -447,24 +456,14 @@ Navigation.prototype.newTab = function (url, options) {
     } else {
         $('#nav-body-tabs').append(tab);
     }
-    // add webview
-    var webV = $(`<webview ${options.id ? 'id="' + options.id + '"' : ''} class="nav-views-view active" 
-    data-session="${this.SESSION_ID}" src="${this._purifyUrl(url)}" ${options.node ? 'nodeintegration' : ''}
-    data-options-json="${encodeURIComponent(JSON.stringify(options))}"
-    ></webview>`);
-    $('#nav-body-views').append(webV);
-    // url text input read only?
-    if (options.readonly)
-        $('#nav-ctrls-url').attr('readonly', 'readonly')
-    else
-        $('#nav-ctrls-url').removeAttr('readonly')
-   
-    // id
+    // add webview    
     let composedWebviewTag = `<webview class="nav-views-view active" data-session="${this.SESSION_ID}" src="${this._purifyUrl(url)}"`;
-    if(options.id){
+    
+    composedWebviewTag += ` data-readonly="${((options.readonlyUrl) ? 'true': 'false')}"`;
+    if (options.id) {
         composedWebviewTag += ` id=${options.id}`;
     }
-    if(options.node){
+    if (options.node) {
         composedWebviewTag += " nodeintegration";
     }
     if (options.webviewAttributes) {
@@ -472,36 +471,13 @@ Navigation.prototype.newTab = function (url, options) {
             composedWebviewTag += ` ${key}="${options.webviewAttributes[key]}"`;
         });
     }
-    $('#nav-body-views').append(`${composedWebviewTag}></webview>`);
-
+    $('#nav-body-views').append(`${composedWebviewTag}></webview>`);    
     // enable reload button
     $('#nav-ctrls-reload').removeClass('disabled');
-    // add context menu
-    if (options.contextMenu) {
-        var webVRaw = webV[0];
-        webVRaw.addEventListener("dom-ready", function () {
-            console.log("DOM-Ready, triggering events !");
-            webVRaw.send("request");
-            contextMenu({
-                window: webVRaw,
-                // prepend: (params, browserWindow) => [{
-                //     //label: 'Rainbow',
-                //     // Only show it when right-clicking images
-                //     //visible: params.mediaType === 'image'
-                // }],
-                labels: {
-                    cut: 'Cut',
-                    copy: 'Copy',
-                    paste: 'Paste',
-                    save: 'Save',
-                    copyLink: 'Copy Link',
-                    inspect: 'Inspect'
-                }
-            });
-        });
-    }
+
+    // update url and add events
     this._updateUrl(this._purifyUrl(url));
-    return this._addEvents(this.SESSION_ID++, options.icon, options.title);
+    return this._addEvents(this.SESSION_ID++, options);
 } //:newTab()
 //
 // change current or specified tab and view
@@ -662,7 +638,7 @@ Navigation.prototype.send = function (id, channel, args) {
 //
 // open developer tools of current or ID'd webview
 //
-Navigation.prototype.openDevTools = function(id) {
+Navigation.prototype.openDevTools = function (id) {
     id = id || null;
     let webview = null;
 
@@ -710,7 +686,7 @@ Navigation.prototype.printTab = function (id, opts) {
     if (webview != null) {
         webview.print(opts || {});
     }
-} 
+}
 //:nextTab()
 //
 // toggle next available tab
@@ -719,7 +695,7 @@ Navigation.prototype.nextTab = function () {
     var tabs = $('.nav-tabs-tab').toArray();
     var activeTabIndex = tabs.indexOf($('.nav-tabs-tab.active')[0]);
     var nexti = activeTabIndex + 1;
-    if(nexti > tabs.length-1) nexti = 0;
+    if (nexti > tabs.length - 1) nexti = 0;
     $($('.nav-tabs-tab')[nexti]).trigger('click');
     return false
 } //:nextTab()
@@ -731,32 +707,32 @@ Navigation.prototype.prevTab = function () {
     var tabs = $('.nav-tabs-tab').toArray();
     var activeTabIndex = tabs.indexOf($('.nav-tabs-tab.active')[0]);
     var nexti = activeTabIndex - 1;
-    if(nexti < 0) nexti = tabs.length-1;
+    if (nexti < 0) nexti = tabs.length - 1;
     $($('.nav-tabs-tab')[nexti]).trigger('click');
     return false
 } //:prevTab()
 // go to a tab by index or keyword
 //
-Navigation.prototype.goToTab = function(index) {
-  $activeTabAndView = $('#nav-body-tabs .nav-tabs-tab.active, #nav-body-views .nav-views-view.active');
+Navigation.prototype.goToTab = function (index) {
+    $activeTabAndView = $('#nav-body-tabs .nav-tabs-tab.active, #nav-body-views .nav-views-view.active');
 
-  if (index == 'previous') {
-    $tabAndViewToActivate = $activeTabAndView.prev('#nav-body-tabs .nav-tabs-tab, #nav-body-views .nav-views-view');
-  } else if (index == 'next') {
-    $tabAndViewToActivate = $activeTabAndView.next('#nav-body-tabs .nav-tabs-tab, #nav-body-views .nav-views-view');
-  } else if (index == 'last') {
-    $tabAndViewToActivate = $('#nav-body-tabs .nav-tabs-tab:last-of-type, #nav-body-views .nav-views-view:last-of-type');
-  } else {
-    $tabAndViewToActivate =  $('#nav-body-tabs .nav-tabs-tab:nth-of-type(' + index  + '), #nav-body-views .nav-views-view:nth-of-type(' + index + ')');
-  }
+    if (index == 'previous') {
+        $tabAndViewToActivate = $activeTabAndView.prev('#nav-body-tabs .nav-tabs-tab, #nav-body-views .nav-views-view');
+    } else if (index == 'next') {
+        $tabAndViewToActivate = $activeTabAndView.next('#nav-body-tabs .nav-tabs-tab, #nav-body-views .nav-views-view');
+    } else if (index == 'last') {
+        $tabAndViewToActivate = $('#nav-body-tabs .nav-tabs-tab:last-of-type, #nav-body-views .nav-views-view:last-of-type');
+    } else {
+        $tabAndViewToActivate = $('#nav-body-tabs .nav-tabs-tab:nth-of-type(' + index + '), #nav-body-views .nav-views-view:nth-of-type(' + index + ')');
+    }
 
-  if ($tabAndViewToActivate.length) {
-    $('#nav-ctrls-url').blur();
-    $activeTabAndView.removeClass('active');
-    $tabAndViewToActivate.addClass('active');
-    this._updateUrl();
-    this._updateCtrls();
-  }
+    if ($tabAndViewToActivate.length) {
+        $('#nav-ctrls-url').blur();
+        $activeTabAndView.removeClass('active');
+        $tabAndViewToActivate.addClass('active');
+        this._updateUrl();
+        this._updateCtrls();
+    }
 } //:goToTab()
 /**
  * MODULE EXPORTS

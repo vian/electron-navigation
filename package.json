@@ -4,7 +4,10 @@
   "description": "Adds a navigation interface to electron that allows you to browse the internet or view local html files with tabs and webviews.",
   "main": "index.js",
   "scripts": {
-    "test": "electron test/start-demo.js"
+    "demo1": "node_modules\\electron\\dist\\electron.exe demos\\demo1-horizontal-light.js",
+    "demo2": "node_modules\\electron\\dist\\electron.exe demos\\demo2-vertical-dark.js",
+    "demo3": "node_modules\\electron\\dist\\electron.exe demos\\demo3-chrome-like.js",
+    "demo4": "node_modules\\electron\\dist\\electron.exe demos\\demo4-parent-child.js"
   },
   "repository": {
     "type": "git",

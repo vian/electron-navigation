@@ -150,8 +150,7 @@ npm i electron-navigation
     <div id="nav-body-views"></div>
     
     <script>
-        const ElectronNavigation = require('electron-navigation')
-        const enav = new ElectronNavigation()
+        const enav = new (require('electron-navigation'))();
     </script>
 
     </body>
@@ -220,10 +219,7 @@ The themes folder also has a template theming file that you can use to style the
 ## Options
 ---
 > You can control how and if some elements are displayed by passing an options object through the main electron-navigation object.
-```const enav = new ElectronNavigation(```<span style="color:red"> **{ }** </span>```);``` 
-
-<details>
-<summary>Details ( click to expand )</summary>
+```const enav = new (require('electron-navigation')(```<span style="color:red;font-weight:900;"> { } </span>```);``` 
 
 { **showBackButton** : *boolean* }
 > Shows/Hides the back button in #nav-body-ctrls. Defaults to **true**.
@@ -263,29 +259,16 @@ options = {
 }
 ```
 
-</details>
-
 ```html
 EXAMPLE: index.html
 
-<script>
-    const ElectronNavigation = require('electron-navgation')
-
-    // the order doesn't matter
-    const enav = new ElectronNavigation({
+<script>    
+    // the order doesn't matter    
+    const enav = new (require('electron-navgation')) ({
         showAddTabButton: false,
         showUrlBar: true,
         showReloadButton: false
-    })
-
-    
-    /* shortcut
-    const enav = new (require('electron-navgation'))({
-        showAddTabButton: false,
-        showUrlBar: true,
-        showReloadButton: false
-    })
-    */
+    });    
 </script>
 ```
 
@@ -303,11 +286,9 @@ EXAMPLE: index.html
 ## Methods
 ---
 > You can control the webviews and tabs using the object variable you created.   
-```const ``` <span style="color:red">**enav**</span> ``` = new ElectronNavigation();```
+```const ``` <span style="color:red;font-weight:900;">enav</span> ``` = new (require('electron-navigation')) ();```
 
 ### **.newTab ( url , { options } )**
-<details>
-<summary>Details ( click to expand )</summary>
 
 > **url** [*required*] - specifies the location of the webview. Will auto add an HTTP protocol if a domain is specified. Otherwise it will perform a google search.
 > ```javascript
@@ -320,17 +301,17 @@ EXAMPLE: index.html
 >> 
 >> { **node** : *boolean* } - allows the webview to use Node.js, and is only recommended for local files. Defaults to **false**.
 >>
->> { **readonly** : *boolean* } - sets the main URL textInput to readonly mode on this tab. Defaults to **false**.
+>> { **readonlyUrl** : *boolean* } - sets the main URL textInput to readonly mode on this tab. Defaults to **false**.
 >>
 >> { **contextMenu** : *boolean* } - enables right-click context menu (by [electron-context-menu](https://github.com/sindresorhus/electron-context-menu)). Defaults to **true**.
 >>
 >> { **webviewAttributes** : *object* } - Specifies additional attributes to pass to the webview tag. Defaults to **{}**.
-> ```javascript
-> // example for passing a custom user agent
-> let google = enav.newTab('http://www.google.com/', {webviewAttributes: {
->   useragent: "Super secret browser"   
-> }});
-> ```
+>> ```javascript
+>> // example for passing a custom user agent
+>> let google = enav.newTab('https://www.google.com/', {webviewAttributes: {
+>>   useragent: "Super secret browser"   
+>> }});
+>> ```
 >> { **icon** : *string* } - changes the favicon. Defaults to **"clean"**.
 >> ```javascript
 >> icon: "default" // uses the regular favicon.
@@ -347,11 +328,13 @@ EXAMPLE: index.html
 > // example of all options and their default values if omitted.
 > var options = {
 >     id: null,  
->     node: false, 
+>     node: false,
+>     readonlyUrl: false,
+>     contextMenu: true, 
 >     webviewAttributes: {},        
 >     icon: "clean",      
 >     title: "default",   
->     close: true         
+>     close: true       
 > }
 > ```
 > **return** - The *webview* Element object. Allows you to use the properties and methods as described here [Element API](https://developer.mozilla.org/en-US/docs/Web/API/Element).
@@ -368,7 +351,6 @@ EXAMPLE: index.html
 > }
 >```
 
-</details>
 
 ### **.changeTab ( url , id )**
 
@@ -394,13 +376,12 @@ EXAMPLE: index.html
 ### **.openDevTools ( id )**
 > **id** [*optional*] - opens the developer tools for the webview with the id specified in *newTab()*. If no id is given the active tab and view are affected. Will console.log an error if the id doesn't exist.
 
-### **.printTab ( id, opts )**
-> **id** [*optional*] - trigger electron print for the webview with the id specified in *newTab()*. If no id is given the active tab and view are affected. Will console.log an error if the id doesn't exist.
-
-> **opts** [*optional*] - electron print options, if nothing is passed the default print dialog will show up. 
->  * `silent` Boolean [*optional*] - Don't ask user for print settings. Default is `false`.
->  * `printBackground` Boolean [*optional*] - Also prints the background color and image of the web page. Default is `false`.
->  * `deviceName` String [*optional*] - Set the printer device name to use. Default is `''`.
+### **.printTab ( id, options )**
+> **id** [*optional*] - trigger electron print for the webview with the id specified in *newTab()*. If no id is given the active tab and view are affected. Will console.log an error if the id doesn't exist.  
+> **options** [*optional*] - electron print options, if nothing is passed the default print dialog will show up. 
+>  * `{ silent: boolean }` [*optional*] - Don't ask user for print settings. Default is `false`.
+>  * `{ printBackground: boolean }` [*optional*] - Also prints the background color and image of the web page. Default is `false`.
+>  * `{ deviceName: string }` [*optional*] - Set the printer device name to use. Default is `''`.
 
 ### **.nextTab (  )**
 > switch focus to next available tab (goes to the first one if the last is active)
@@ -409,24 +390,19 @@ EXAMPLE: index.html
 > switch focus to previous available tab (goes to the last one if the first is active)
 
 ### **.send ( id, channel, args )**
-<details>
-<summary>Details ( click to expand )</summary>
 
-> **id** - sends a message to the webview with the id specified in *newTab()*. Will console.log an error if the id doesn't exist.  
+> **id `<string>`** - sends a message to the webview with the id specified in *newTab()*. Will console.log an error if the id doesn't exist.  
 >
-> **channel** - a channel name of your choosing to keep track of messages.  
+> **channel `<string>`** - a channel name of your choosing to keep track of messages.  
 >
-> **args** - a list [] of arguments to send to the webview.    
+> **args `<array>`** - a list [] of arguments to send to the webview.    
 >```javascript
 > enav.send('webviewIdHere', 'channelNameHere', ['arg', 'list', 'here'])
 >```
-> * See `test/parent-main.html` & `test/child-local.html` for examples.
+> * See `demos/demo4*` for examples.
 
-</details>
 
 ### **.listen ( id, callback )**
-<details>
-<summary>Details ( click to expand )</summary>
 
 > **id** - listens for a message from the webview with the id specified in *newTab()*. Will console.log an error if the id doesn't exist.  
 >
@@ -450,7 +426,6 @@ EXAMPLE: index.html
 >>```
 > * See `test/parent-main.html` & `test/child-local.html` for examples.
 
-</details>
 
 ```html
 EXAMPLE: index.html
@@ -507,7 +482,10 @@ git clone https://github.com/simply-coded/electron-navigation.git
 
 > After you've cloned the project you can run the demos with npm.
 ```
-npm test
+npm run demo1   // horizontal material-light theme demo
+npm run demo2   // vertical material-dark theme demo
+npm run demo3   // chrome keyboard shortcuts and theme demo
+npm run demo4   // parent-child and local file demo
 ```
 
 <p align="center" style="color:black;">
@@ -523,6 +501,15 @@ npm test
 
 ## History
 ---
+* 1.5.5
+    * `ADD` - chrome like theme, chrome like keyboard shortcuts (in demo3); *contextMenu* and *readonlyUrl* options to *newTab()*; *printTab()*, *prevTab()* and *nextTab()* methods to main object thanks to github user [rbravo](https://github.com/rbravo).
+    * `ADD` - *webviewAttributes* object to *newTab()* *options* object thanks to github user [localh0rzd](https://github.com/localh0rzd).
+    * `CHANGE` - renamed **test** folder to **demos**, and simplified file names within it.
+    * `ADD` - *demo1*, *demo2*, *demo3*, *demo4* to **package.json** scripts.
+    * `ADD` - updated **README.md** with all new features.
+    * `REMOVE` - removed expandable detail panes from **README.md**.
+    * `CHANGE` - cleaned up **index.js** from all the recent merges.
+
 * 1.5.4
     * `CHANGE` - fixed url not updating correctly thanks to github user [akz92](https://github.com/akz92)
     * `ADD` - goToTab( index ) method added thanks to github user [akz92](https://github.com/akz92). README.md docs will be added in the future.
@@ -538,9 +525,6 @@ npm test
     * `ADD` - *send()*, *listen()*, and *openDevTools()* functions for easier local HTML communication.
     * `CHANGE` - test folder file names and contents to reflect the latest features.
     * `CHANGE` - update **README.md** with new functions.
-<details>
-<summary>view more...</summary>
-
 * 1.4.2
     * `CHANGE` - renamed the preview files to be more clear on what they are.
     * `CHANGE` - replaced the live preview with one that shows a local file example.
