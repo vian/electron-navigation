@@ -320,6 +320,13 @@ EXAMPLE: index.html
 >> 
 >> { **node** : *boolean* } - allows the webview to use Node.js, and is only recommended for local files. Defaults to **false**.
 >>
+>> { **webviewAttributes** : *object* } - Specifies additional attributes to pass to the webview tag. Defaults to **{}**.
+> ```javascript
+> // example for passing a custom user agent
+> let google = enav.newTab('http://www.google.com/', {webviewAttributes: {
+>   useragent: "Super secret browser"   
+> }});
+> ```
 >> { **icon** : *string* } - changes the favicon. Defaults to **"clean"**.
 >> ```javascript
 >> icon: "default" // uses the regular favicon.
@@ -336,7 +343,8 @@ EXAMPLE: index.html
 > // example of all options and their default values if omitted.
 > var options = {
 >     id: null,  
->     node: false,         
+>     node: false, 
+>     webviewAttributes: {},        
 >     icon: "clean",      
 >     title: "default",   
 >     close: true         

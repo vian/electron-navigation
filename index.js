@@ -383,6 +383,7 @@ Navigation.prototype.newTab = function (url, options) {
     var defaults = {
         id: null, // null, 'custom'
         node: false, // true, false
+        webviewAttributes: {},
         icon: "clean", // 'default', 'clean', 'c:\custom.png'
         title: "default", // 'default', 'custom'
         close: true // true, false
@@ -434,19 +435,19 @@ Navigation.prototype.newTab = function (url, options) {
         $('#nav-body-tabs').append(tab);
     }
     // id
-    if (options.id == null) {
-        if (options.node) {
-            $('#nav-body-views').append('<webview class="nav-views-view active" data-session="' + this.SESSION_ID + '" src="' + this._purifyUrl(url) + '" nodeintegration></webview>');
-        } else {
-            $('#nav-body-views').append('<webview class="nav-views-view active" data-session="' + this.SESSION_ID + '" src="' + this._purifyUrl(url) + '"></webview>');
-        }
-    } else {
-        if (options.node) {
-            $('#nav-body-views').append('<webview id="' + options.id + '" class="nav-views-view active" data-session="' + this.SESSION_ID + '" src="' + this._purifyUrl(url) + '" nodeintegration></webview>');
-        } else {
-            $('#nav-body-views').append('<webview id="' + options.id + '" class="nav-views-view active" data-session="' + this.SESSION_ID + '" src="' + this._purifyUrl(url) + '"></webview>');
-        }
+    let composedWebviewTag = `<webview class="nav-views-view active" data-session="${this.SESSION_ID}" src="${this._purifyUrl(url)}"`;
+    if(options.id){
+        composedWebviewTag += ` id=${options.id}`;
     }
+    if(options.node){
+        composedWebviewTag += " nodeintegration";
+    }
+    if (options.webviewAttributes) {
+        Object.keys(options.webviewAttributes).forEach((key) => {
+            composedWebviewTag += ` ${key}="${options.webviewAttributes[key]}"`;
+        });
+    }
+    $('#nav-body-views').append(`${composedWebviewTag}></webview>`);
     $('#nav-ctrls-reload').removeClass('disabled');
     this._updateUrl(this._purifyUrl(url));
     return this._addEvents(this.SESSION_ID++, options.icon, options.title);
