@@ -472,7 +472,7 @@ npm run demo4   // parent-child and local file demo
 
 # History
 * 1.5.6
-    * `CHANGE` - cleaned up **README.md** file.
+    * `CHANGE` - cleaned up **README.md** file, and added types to parameters.
     * `ADD` - preview for chrome theme.
 * 1.5.5
     * `ADD` - chrome like theme, chrome like keyboard shortcuts (in demo3); *contextMenu* and *readonlyUrl* options to *newTab()*; *printTab()*, *prevTab()* and *nextTab()* methods to main object thanks to github user [rbravo](https://github.com/rbravo).
