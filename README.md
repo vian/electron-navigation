@@ -1,12 +1,11 @@
 # electron-navigation
 ![version](https://img.shields.io/npm/v/electron-navigation.svg?style=flat-square)![downloads](https://img.shields.io/npm/dt/electron-navigation.svg?style=flat-square)![license](https://img.shields.io/npm/l/electron-navigation.svg?style=flat-square)
 
-## Adds a navigation interface to Electron that allows you to browse the internet or view local HTML files with tabs and webviews.
+### Adds a navigation interface to Electron that allows you to browse the internet or view local HTML files with tabs and webviews.
 
-![](previews/light-theme.PNG)![](previews/in-action.gif)
+![](previews/light-theme.PNG)![](previews/chrome-theme.png)![](previews/in-action.gif)
 
-## Install 
----
+# Install 
 ```
 npm i electron-navigation
 ```
@@ -25,9 +24,7 @@ npm i electron-navigation
     <a href="#meta" style="color:grey;">CONTACT</a>
 </p>
 
-## Setup
----  
-
+# Setup
 > This works with electron, so let's get a basic electron app going.
 
 
@@ -35,19 +32,19 @@ npm i electron-navigation
     ```
     demo/
     ├── package.json
-    ├── main.js
+    ├── index.js
     ├── index.html
     ```
 
 2. Let's populate these files with some basic code.  
 
-	`package.json`
+	FILE: package.json
     ```json
     {
       "name": "demo",
       "version": "1.0.0",
       "description": "",
-      "main": "main.js",
+      "main": "index.js",
       "scripts": {
         "start": "node_modules\\electron\\dist\\electron ."
       },
@@ -56,31 +53,31 @@ npm i electron-navigation
     }
     ```
 
-    `main.js`
+    FILE: index.js
     ```javascript
     const {
         app,
         BrowserWindow
-    } = require('electron')
+    } = require('electron');
 
-    let win
+    let win;
 
     app.on('ready', () => {
 
         win = new BrowserWindow({
             width: 800,
             height: 600
-        })
+        });
 
-        win.loadURL(`file:///${__dirname}/index.html`)
+        win.loadURL(`file:///${__dirname}/index.html`);
 
         win.on('closed', () => {
-            win = null
-        })
+            win = null;
+        });
 
-    })
+    });
     ```
-	`index.html`
+	FILE: index.html
     ```html
     <!DOCTYPE html>
     <html>
@@ -96,7 +93,7 @@ npm i electron-navigation
 3. Time to test if it works. Open up your command prompt (windows) and type these commands hitting *enter* after each one. Make sure you have Node.js installed which can be found [here](https://nodejs.org/en/download/).
     ```
     cd "C:\location\of\your\folder\demo"
-    npm i electron-navigation --save
+    npm i electron-navigation
     npm start
     ```
 	![](previews/electron.PNG)
@@ -117,13 +114,10 @@ npm i electron-navigation
     <a href="#meta" style="color:grey;">CONTACT</a>
 </p>
 
-## Usage
----
+# Usage
 1. In your main **~.html** file you need to create **3** containers where the controls, tabs, and views will be auto placed into. The demo uses **index.html** as it's main file.
-    
-    ```html
     EXAMPLE: index.html
-
+    ```html
     <body>
     <!-- your code here -->
 
@@ -140,10 +134,8 @@ npm i electron-navigation
 	
 2. Now we need to apply the module by adding a script tag to the **~.html** file so that it can add the tabs and controls to the containers we just created above.	
 
-    
-    ```html
     EXAMPLE: index.html
-
+    ```html
     <!-- your code here -->
 	<div id="nav-body-ctrls"></div>
     <div id="nav-body-tabs"></div>
@@ -162,7 +154,7 @@ npm i electron-navigation
     ```
     ![](previews/electron-with-module.PNG)
 
-> This should be all you need to get the basic functionality working. If you are confused and want some more examples including how to use **local html files** in the tabs then check out the [demos](https://github.com/simply-coded/electron-navigation/tree/master/test) on github.
+> This should be all you need to get the basic functionality working. If you are confused and want some more examples including how to use **local html files** in the tabs then check out the [demos](https://github.com/simply-coded/electron-navigation/tree/master/demos) on github.
 
 <p align="center" style="color:black;">
     <a href="#setup" style="color:grey;">SETUP</a> |
@@ -175,11 +167,10 @@ npm i electron-navigation
     <a href="#meta" style="color:grey;">CONTACT</a>
 </p>
 
-## Themes
----
-You can apply themes by downloading the ones on [github](https://github.com/simply-coded/electron-navigation/tree/master/themes) and putting them in your `<head>` tag.  
+# Themes
+### You can apply themes by downloading the ones on [github](https://github.com/simply-coded/electron-navigation/tree/master/themes) and putting them in your `<head>` tag.  
 
-`index.html`
+EXAMPLE: index.html
 ```html
 <head>
   <!-- your code here -->
@@ -188,11 +179,11 @@ You can apply themes by downloading the ones on [github](https://github.com/simp
 </head>
 ```
 
+### The themes folder also has a template theming file that you can use to style the tabs and controls exactly how you wish. 
 
-The themes folder also has a template theming file that you can use to style the tabs and controls exactly how you wish. 
-
-`theme-template.css`
+FILE: theme-template.css
 ```css
+
 /* back button, grouped in: .nav-icons */
 #nav-ctrls-back {
     /* fill:#000; width:24px; height:24px; */
@@ -216,38 +207,37 @@ The themes folder also has a template theming file that you can use to style the
     <a href="#meta" style="color:grey;">CONTACT</a>
 </p>
 
-## Options
----
-> You can control how and if some elements are displayed by passing an options object through the main electron-navigation object.
-```const enav = new (require('electron-navigation')(```<span style="color:red;font-weight:900;"> { } </span>```);``` 
+# Options
+### You can control how and if some elements are displayed by passing an options object through the main electron-navigation object.  
+```js
+const enav = new (require('electron-navigation')( { HERE } );
+```
+### __{ showBackButton : `<boolean>` }__
+> Shows/hides the back button in #nav-body-ctrls. Defaults to `true`.
 
-{ **showBackButton** : *boolean* }
-> Shows/Hides the back button in #nav-body-ctrls. Defaults to **true**.
+### __{ showForwardButton : `<boolean>` }__
+> Shows/hides the forward button in #nav-body-ctrls. Defaults to `true`.
 
-{ **showForwardButton** : *boolean* }
-> Shows/Hides the forward button in #nav-body-ctrls. Defaults to **true**.
+### __{ showReloadButton : `<boolean>` }__
+> Shows/hides the reload button in #nav-body-ctrls. Defaults to `true`.
 
-{ **showReloadButton** : *boolean* }
-> Shows/Hides the reload button in #nav-body-ctrls. Defaults to **true**.
+### __{ showUrlBar : `<boolean>` }__
+> Shows/hides the url input in #nav-body-ctrls. Defaults to `true`.
 
-{ **showUrlBar** : *boolean* }
-> Shows/Hides the url input in #nav-body-ctrls. Defaults to **true**.
+### __{ showAddTabButton : `<boolean>` }__
+> Shows/hides the add button in #nav-body-tabs. Defaults to `true`.
 
-{ **showAddTabButton** : *boolean* }
-> Shows/Hides the add button in #nav-body-tabs. Defaults to **true**.
+### __{ closableTabs : `<boolean>` }__
+> Shows/hides the close button on tabs in .nav-tabs-tab. Defaults to `true`.
 
-{ **closableTabs** : *boolean* }
-> Shows/Hides the close button on tabs in .nav-tabs-tab. Defaults to **true**.
+### __{ verticalTabs : `<boolean>` }__
+> Changes the direction tabs are stacked in #nav-body-tabs. Defaults to `false`.
 
-{ **verticalTabs** : *boolean* }
-> Changes the direction tabs are stacked in #nav-body-tabs. Defaults to **false**.
-
-{ **defaultFavicons** : *boolean* }
-> Uses the default favicons instead of the unified color coded ones in .nav-tabs-tab. Defaults to **false**.
-
-```javascript
-// Example of all options and their default values if omitted.
-options = {
+### __{ defaultFavicons : `<boolean>` }__
+> Uses the default favicons instead of the unified color coded ones in .nav-tabs-tab. Defaults to `false`.
+```js
+// all options and their default values if omitted.
+let options = {
     showBackButton: true,
     showForwardButton: true,
     showReloadButton: true,
@@ -258,10 +248,8 @@ options = {
     defaultFavicons: false
 }
 ```
-
+EXAMPLE : index.html 
 ```html
-EXAMPLE: index.html
-
 <script>    
     // the order doesn't matter    
     const enav = new (require('electron-navgation')) ({
@@ -283,50 +271,45 @@ EXAMPLE: index.html
     <a href="#meta" style="color:grey;">CONTACT</a>
 </p>
 
-## Methods
----
-> You can control the webviews and tabs using the object variable you created.   
-```const ``` <span style="color:red;font-weight:900;">enav</span> ``` = new (require('electron-navigation')) ();```
-
-### **.newTab ( url , { options } )**
-
-> **url** [*required*] - specifies the location of the webview. Will auto add an HTTP protocol if a domain is specified. Otherwise it will perform a google search.
-> ```javascript
-> "http://github.com/" // "http://github.com/"
-> "youtube.com" // "http://www.youtube.com/"
-> "hello there" // "https://www.google.com/search?q=hello+there"
+# Methods
+### You can control the webviews and tabs using the object variable you created.  
+```js
+const HERE = new (require('electron-navigation'))();
+```
+### __.newTab ( `url` , `options` )__
+> ### __url__ `<string>` [*required argument*] - Specifies the location of the webview. Will perform a search if no domain specified.
+>```js
+> "http://github.com/"  // "http://github.com/"
+> "youtube.com"         // "http://www.youtube.com/"
+> "hello there"         // "https://www.google.com/search?q=hello+there"
 > ```
-> **{ options }** [*optional*] - allows you to control the tab appearance.
->> { **id** : *string* } - creates an id for this tab's view so you can control it later. Logs an error if the id is already taken or invalid. Defaults to **null**.  
->> 
->> { **node** : *boolean* } - allows the webview to use Node.js, and is only recommended for local files. Defaults to **false**.
->>
->> { **readonlyUrl** : *boolean* } - sets the main URL textInput to readonly mode on this tab. Defaults to **false**.
->>
->> { **contextMenu** : *boolean* } - enables right-click context menu (by [electron-context-menu](https://github.com/sindresorhus/electron-context-menu)). Defaults to **true**.
->>
->> { **webviewAttributes** : *object* } - Specifies additional attributes to pass to the webview tag. Defaults to **{}**.
->> ```javascript
+> ### __options__ `<object>` [*optional argument*] - Controls the tab appearance. All KVPs are optional and orderless.
+>> ### __{ id :__ `<string>` __}__ - Creates an `ID` for this tab's view so you can control it later. Logs an error if the `ID` is already taken or invalid. Defaults to `null`.
+>> ### __{ node :__ `<boolean>` __}__ - Allows the webview to use Node.js, and is only recommended for local files. Defaults to `false`.
+>> ### __{ readonlyUrl :__ `<boolean>` __}__ - Sets the main URL text input to readonly mode on this tab. Defaults to `false`.
+>> ### __{ contextMenu :__ `<boolean>` __}__ - Enables right-click context menu by [electron-context-menu](https://github.com/sindresorhus/electron-context-menu). Bit buggy. Defaults to `true`.
+>> ### __{ webviewAttributes :__ `<object>` __}__ - Specifies additional attributes to pass to the webview tag. Defaults to `{}`.
+>> ```js
 >> // example for passing a custom user agent
 >> let google = enav.newTab('https://www.google.com/', {webviewAttributes: {
 >>   useragent: "Super secret browser"   
 >> }});
 >> ```
->> { **icon** : *string* } - changes the favicon. Defaults to **"clean"**.
->> ```javascript
->> icon: "default" // uses the regular favicon.
->> icon: "clean" // uses a constant globe icon that is colored based on the default favicon.
->> icon: "custom.png" // uses an icon you provide. Full or relative paths and other extensions are allowed.
+>> ### __{ icon :__ `<string>` __}__ - Changes the favicon. Defaults to `"clean"`.
+>> ```js
+>> {icon: "default"}      // uses the regular favicon.
+>> {icon: "clean"}        // uses a constant globe icon that is colored based on the default favicon.
+>> {icon: "/path/to/image.png"}   // uses an icon you provide. Full or relative paths and other extensions are allowed.
 >> ```
->> { **title** : *string* } - changes the title of the tab. Defaults to **"default"**.
->> ```javascript
->> title: "default" // uses the title specified by the <title> tag.
->> title: "custom title" // uses whatever title you type.
+>> ### __{ title :__ `<string>` __}__ - Changes the title of the tab. Defaults to `"default"`.
+>> ```js
+>> {title: "default"}         // uses the title specified by the <title> tag.
+>> {title: "custom title"}    // uses whatever title you type.
 >> ```
->> { **close** : *boolean* } - shows/hides the close button. Defaults to **true**.  
-> ```javascript
-> // example of all options and their default values if omitted.
-> var options = {
+>> ### __{ close :__ `<boolean>` __}__ - Shows/hides the close button. Defaults to `true`.  
+> ```js
+> // all options and their default values if omitted.
+> let options = {
 >     id: null,  
 >     node: false,
 >     readonlyUrl: false,
@@ -337,82 +320,73 @@ EXAMPLE: index.html
 >     close: true       
 > }
 > ```
-> **return** - The *webview* Element object. Allows you to use the properties and methods as described here [Element API](https://developer.mozilla.org/en-US/docs/Web/API/Element).
->```javascript
-> // Example on how to allow plugins
-> var google = enav.newTab('http://www.google.com/')
-> google.setAttribute('plugins', '')
+> ### __return__ `<object>` - The webview element object. Allows you to use the properties and methods as described here [Element API](https://developer.mozilla.org/en-US/docs/Web/API/Element).
+>```js
+> // example on how to allow plugins
+> let google = enav.newTab('http://www.google.com/');
+> google.setAttribute('plugins', '');
 >
-> // Check if it has node integration
-> if (google.hasAttribute('nodeintegration')) {
->    alert('yes, you can use node in this tab.')
-> } else {
->    alert('no, you cannot use node in this tab.')   
-> }
+> // check if it has node integration
+> if (google.hasAttribute('nodeintegration')) 
+>   alert('yes, you can use node in this tab.');
+> else 
+>   alert('no, you cannot use node in this tab.');
 >```
 
-
-### **.changeTab ( url , id )**
-
-> **url** [*required*] - specifies the new location of the webview. Has the same auto features as *newTab()*.  
+### __.changeTab ( `url` , `id` )__
+> ### __url__ `<string>` [*required argument*] - Specifies the new location of the webview. Has the same auto features as **newTab()**.  
 > 
-> **id** [*optional*] - changes the source of the webview with the id specified in *newTab()*. If no id is given the active tab and view are affected. Will console.log an error if the id doesn't exist.
+> ### __id__ `<string>` [*optional argument*] - Changes the source of the webview with the `ID` specified in __newTab()__. If no `ID` is given the active tab and view are affected. Will console.log an error if the `ID` doesn't exist.
 
-### **.closeTab ( id )**
-> **id** [*optional*] - closes the tab and webview with the id specified in *newTab()*. If no id is given the active tab and view are affected. Will console.log an error if the id doesn't exist.
+### __.closeTab ( `id` )__
+> ### __id__ `<string>` [*optional argument*] - Closes the tab and webview with the `ID` specified in __newTab()__. If no `ID` is given the active tab and view are affected. Will console.log an error if the `ID` doesn't exist.
 
-### **.back ( id )**
-> **id** [*optional*] - goes back on the webview with the id specified in *newTab()*. If no id is given the active tab and view are affected. Will console.log an error if the id doesn't exist.
+### __.back ( `id` )__
+> ### __id__ `<string>` [*optional argument*] - Goes back on the webview with the `ID` specified in __newTab()__. If no `ID` is given the active tab and view are affected. Will console.log an error if the `ID` doesn't exist.
 
-### **.forward ( id )**
-> **id** [*optional*] - goes forward on the webview with the id specified in *newTab()*. If no id is given the active tab and view are affected. Will console.log an error if the id doesn't exist.
+### __.forward ( `id` )__
+> ### __id__ `<string>` [*optional argument*] - Goes forward on the webview with the `ID` specified in __newTab()__. If no `ID` is given the active tab and view are affected. Will console.log an error if the `ID` doesn't exist.
 
-### **.reload ( id )**
-> **id** [*optional*] - reloads the webview with the id specified in *newTab()*. If no id is given the active tab and view are affected. Will console.log an error if the id doesn't exist.
+### __.reload ( `id` )__
+> ### __id__ `<string>` [*optional argument*] - Reloads the webview with the `ID` specified in __newTab()__. If no `ID` is given the active tab and view are affected. Will console.log an error if the `ID` doesn't exist.
 
-### **.stop ( id )**
-> **id** [*optional*] - stops loading the webview with the id specified in *newTab()*. If no id is given the active tab and view are affected. Will console.log an error if the id doesn't exist.
+### __.stop ( `id` )__
+> ### __id__ `<string>` [*optional argument*] - Stops loading the webview with the `ID` specified in __newTab()__. If no `ID` is given the active tab and view are affected. Will console.log an error if the `ID` doesn't exist.
 
-### **.openDevTools ( id )**
-> **id** [*optional*] - opens the developer tools for the webview with the id specified in *newTab()*. If no id is given the active tab and view are affected. Will console.log an error if the id doesn't exist.
+### __.openDevTools ( `id` )__
+> ### __id__ `<string>` [*optional argument*] - Opens the developer tools for the webview with the ``ID`` specified in __newTab()__. If no `ID` is given the active tab and view are affected. Will console.log an error if the `ID` doesn't exist.
 
-### **.printTab ( id, options )**
-> **id** [*optional*] - trigger electron print for the webview with the id specified in *newTab()*. If no id is given the active tab and view are affected. Will console.log an error if the id doesn't exist.  
-> **options** [*optional*] - electron print options, if nothing is passed the default print dialog will show up. 
->  * `{ silent: boolean }` [*optional*] - Don't ask user for print settings. Default is `false`.
->  * `{ printBackground: boolean }` [*optional*] - Also prints the background color and image of the web page. Default is `false`.
->  * `{ deviceName: string }` [*optional*] - Set the printer device name to use. Default is `''`.
+### __.printTab ( `id`, `options` )__
+> ### __id__ `<string>` [*optional*] - Trigger electron print for the webview with the `ID` specified in __newTab()__. If no `ID` is given the active tab and view are affected. Will console.log an error if the `ID` doesn't exist.
+> ### __options__ `<object>` [*optional argument*] - Electron print options, if nothing is passed the default print dialog will show up. 
+>> ### __{ silent:__ `<boolean>` __}__ [*optional argument*] - Don't ask user for print settings. Defaults to `false`.
+>> ### __{ printBackground:__ `<boolean>` __}__ [*optional argument*] - Also prints the background color and image of the web page. Defaults to `false`.
+>> ### __{ deviceName:__ `<string>` __}__ [*optional argument*] - Set the printer device name to use. Defaults to `''`.
 
-### **.nextTab (  )**
-> switch focus to next available tab (goes to the first one if the last is active)
+### __.nextTab (  )__
+> Switch focus to next available tab (goes to the first one if the last is active).
 
-### **.prevTab (  )**
-> switch focus to previous available tab (goes to the last one if the first is active)
+### __.prevTab (  )__
+> Switch focus to previous available tab (goes to the last one if the first is active).
 
-### **.send ( id, channel, args )**
-
-> **id `<string>`** - sends a message to the webview with the id specified in *newTab()*. Will console.log an error if the id doesn't exist.  
->
-> **channel `<string>`** - a channel name of your choosing to keep track of messages.  
->
-> **args `<array>`** - a list [] of arguments to send to the webview.    
->```javascript
+### __.send ( `id`, `channel`, `args` )__
+> ### __id__ `<string>` - Sends a message to the webview with the `ID` specified in __newTab()__. Will console.log an error if the `ID` doesn't exist.  
+> ### __channel__ `<string>` - A channel name of your choosing to keep track of messages.  
+> ### __args__ `<array>` - A list of arguments to send to the webview.
+>```js
 > enav.send('webviewIdHere', 'channelNameHere', ['arg', 'list', 'here'])
 >```
 > * See `demos/demo4*` for examples.
 
 
-### **.listen ( id, callback )**
-
-> **id** - listens for a message from the webview with the id specified in *newTab()*. Will console.log an error if the id doesn't exist.  
+### __.listen ( `id`, `callback` )__
+> ### __id__ `<string>` - Listens for a message from the webview with the `ID` specified in __newTab()__. Will console.log an error if the `ID` doesn't exist.  
 >
-> **callback** ( channel, args, respond ) - a function that returns info from a webview message.
->> **channel** - the channel the message is comming from.
->>
->> **args** - a list [] of arguments from the webview.  
->>
->> **respond** - the webview element that sent the message.  
->>```javascript
+> ### __callback ( `channel`, `args`, `respond` )__ `<function`> - Returns info from a webview message.
+>> ### __channel__ `<string>` - The channel the message is comming from.
+>> ### __args__ `<array>` - A list of arguments from the webview.
+>> ### __respond__ `<object>` - The webview element that sent the message.  
+>>```js
 >> enav.listen('webviewIdHere', (channel, args, respond) => {
 >>      if (channel == 'channelNameHere') {
 >>          let argOne = args[0]
@@ -424,12 +398,10 @@ EXAMPLE: index.html
 >>      }
 >> }
 >>```
-> * See `test/parent-main.html` & `test/child-local.html` for examples.
+>> * See `demos/demo4*` for examples.
 
-
-```html
 EXAMPLE: index.html
-
+```html
 <script>   
     // create object
     const enav = new (require('electron-navigation'))({ 
@@ -472,15 +444,14 @@ EXAMPLE: index.html
     <a href="#meta" style="color:grey;">CONTACT</a>
 </p>
 
-## Requests | Issues | Clone <a name="more"></a>
----
-> Looking to add functionality to this project, report a bug, or just have a question? Submit a [request](https://github.com/simply-coded/electron-navigation/issues), or clone the project and do it yourself.
+# Requests | Issues | Clone <a name="more"></a>
+### Looking to add functionality to this project, report a bug, or just have a question? Submit a [request](https://github.com/simply-coded/electron-navigation/issues), or clone the project and do it yourself.
 
 ```
 git clone https://github.com/simply-coded/electron-navigation.git
 ```
 
-> After you've cloned the project you can run the demos with npm.
+### After you've cloned the project you can run the demos with npm.
 ```
 npm run demo1   // horizontal material-light theme demo
 npm run demo2   // vertical material-dark theme demo
@@ -499,8 +470,10 @@ npm run demo4   // parent-child and local file demo
     <a href="#meta" style="color:grey;">CONTACT</a>
 </p>
 
-## History
----
+# History
+* 1.5.6
+    * `CHANGE` - cleaned up **README.md** file.
+    * `ADD` - preview for chrome theme.
 * 1.5.5
     * `ADD` - chrome like theme, chrome like keyboard shortcuts (in demo3); *contextMenu* and *readonlyUrl* options to *newTab()*; *printTab()*, *prevTab()* and *nextTab()* methods to main object thanks to github user [rbravo](https://github.com/rbravo).
     * `ADD` - *webviewAttributes* object to *newTab()* *options* object thanks to github user [localh0rzd](https://github.com/localh0rzd).
@@ -546,19 +519,19 @@ npm run demo4   // parent-child and local file demo
     * `FIX` - changed the description to include local files.
     * `FIX` - url input now changes on tab click.
 * 1.2.0
-    * `ADD` - the *newTab()* function now has an options object as its second parameter to control the *icon*, *title*, *close button*, and add an *id*.
-    * `CHANGE` - the second parameter *id* in *newTab()* is now included in an options object.
+    * `ADD` - the *newTab()* function now has an options object as its second parameter to control the *icon*, *title*, *close button*, and add an *`ID`*.
+    * `CHANGE` - the second parameter *`ID`* in *newTab()* is now included in an options object.
     * `FIX` - updated the **README.md** and **demo-light.html** files to show more examples.
 * 1.1.1
     * `FIX` - updated the **README.md** with extra info, rearrangements, and formatting.
 * 1.1.0
     * `FIX` - url bar will know not update while you are trying to type something new.
     * `ADD` - methods *back()*, *forward()*, *reload()*, and *stop()*.
-    * `ADD` - optional id parameter to the above methods for selecting which view to take action on.
-    * `CHANGE` - optional id paramter to *changeTab()* for selecting which view to take action on.
-    * `CHANGE` - optional id parameter to *newTab()* for setting apart tabs, and controlling it later. 
+    * `ADD` - optional `ID` parameter to the above methods for selecting which view to take action on.
+    * `CHANGE` - optional `ID` paramter to *changeTab()* for selecting which view to take action on.
+    * `CHANGE` - optional `ID` parameter to *newTab()* for setting apart tabs, and controlling it later. 
     * `ADD` - option to remove the close button on tabs called *closableTabs*.
-    * `ADD` - method *closeTab()* with optional id parameter for selecting which tab to take action on.
+    * `ADD` - method *closeTab()* with optional `ID` parameter for selecting which tab to take action on.
 * 1.0.5
     * `ADD` - vertical demo as displayed in the previews.
 * 1.0.4
@@ -585,9 +558,7 @@ npm run demo4   // parent-child and local file demo
     <a href="#meta" style="color:grey;">CONTACT</a>
 </p>
 
-## Meta
----
-
-Jeremy England ( SimplyCoded ) - [simplycoded.help@gmail.com](mailto:simplycoded.help@gmail.com)
+# Meta
+__Jeremy England__ `<SimplyCoded>` - _simplycoded.help@gmail.com_
 
 Distributed under the MIT license. See [`LICENSE`](https://spdx.org/licenses/MIT.html) for more information.
