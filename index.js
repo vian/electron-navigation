@@ -335,10 +335,12 @@ function Navigation(options) {
         webview[0].addEventListener('did-navigate-in-page', (res) => {
             NAV._updateUrl(res.url);
         });
-        webview[0].addEventListener('new-window', (res) => {
-            NAV.newTab(res.url, {
-                icon: NAV.TAB_ICON
-            });
+        webview[0].addEventListener("new-window", (res) => {
+            if (!(options.newWindowFrameNameBlacklistExpression instanceof RegExp && options.newWindowFrameNameBlacklistExpression.test(res.frameName))) {
+                NAV.newTab(res.url, {
+                    icon: NAV.TAB_ICON
+                });
+            }
         });
         webview[0].addEventListener('page-favicon-updated', (res) => {
             if (options.icon == 'clean') {

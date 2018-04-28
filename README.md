@@ -295,6 +295,10 @@ const HERE = new (require('electron-navigation'))();
 >>   useragent: "Super secret browser"   
 >> }});
 >> ```
+>> ### __{ newWindowFrameNameBlacklistExpression:__ `<RegExp>` __}__ - Whenever a window is opened through `window.open()`, a `new-window` event is emitted automatically. This option allows to specify frame names that should not trigger the creation of a new tab. 
+>> ```js
+>> {newWindowFrameNameBlacklistExpression: /internallyOpened|popup[0-9]/i}
+>> ```
 >> ### __{ icon :__ `<string>` __}__ - Changes the favicon. Defaults to `"clean"`.
 >> ```js
 >> {icon: "default"}      // uses the regular favicon.
@@ -314,7 +318,7 @@ const HERE = new (require('electron-navigation'))();
 >     node: false,
 >     readonlyUrl: false,
 >     contextMenu: true, 
->     webviewAttributes: {},        
+>     webviewAttributes: {},
 >     icon: "clean",      
 >     title: "default",   
 >     close: true       
