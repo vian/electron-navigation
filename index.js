@@ -39,21 +39,17 @@ function Navigation(options) {
         showAddTabButton: true,
         closableTabs: true,
         verticalTabs: false,
-        defaultFavicons: false
+        defaultFavicons: false,
+        newTabCallback: null,
+        newTabParams: null
     };
-    if (options === 'undefined' || options === 'null' || options !== Object(options)) {
-        options = {};
-    }
-    for (var key in defaults) {
-        if (!(key in options)) {
-            options[key] = defaults[key];
-        }
-    }
+    options = options ? Object.assign(defaults,options) : defaults;
     /**
      * GLOBALS & ICONS
      */
     globalCloseableTabsOverride = options.closableTabs;
     const NAV = this;
+    this.newTabCallback = options.newTabCallback;
     this.SESSION_ID = 1;
     if (options.defaultFavicons) {
         this.TAB_ICON = "default";
@@ -133,10 +129,19 @@ function Navigation(options) {
     // add a tab, default to google.com
     //
     $('#nav-body-tabs').on('click', '#nav-tabs-add', function () {
-        NAV.newTab('http://www.google.com/', {
-            close: options.closableTabs,
-            icon: NAV.TAB_ICON
-        });
+        let params;
+        if(typeof options.newTabParams === "function"){
+            params = options.newTabParams();
+        }
+        else if(options.newTabParams instanceof Array){
+            params = options.newTabParams
+        } else {
+            params = ['http://www.google.com/', {
+                close: options.closableTabs,
+                icon: NAV.TAB_ICON
+            }];
+        }
+        NAV.newTab(...params);
     });
     //
     // go back
@@ -410,16 +415,26 @@ Navigation.prototype.newTab = function (url, options) {
         title: "default", // 'default', 'your title here'
         close: true,
         readonlyUrl: false,
-        contextMenu: true
+        contextMenu: true,
+        newTabCallback: this.newTabCallback
     }
-    if (options === 'undefined' || options === 'null' || options !== Object(options)) {
-        options = {};
-    }
-    for (var key in defaults) {
-        if (!(key in options)) {
-            options[key] = defaults[key];
+    options = options ? Object.assign(defaults,options) : defaults;
+    if(typeof options.newTabCallback === "function"){
+        let result = options.newTabCallback(url, options);
+        if(!result){
+            return null;
+        }
+        if(result.url){
+            url = result.url;
+        }
+        if(result.options){
+            options = result.options;
+        }
+        if(typeof result.postTabOpenCallback === "function"){
+            options.postTabOpenCallback = result.postTabOpenCallback;
         }
     }
+
     // validate options.id
     $('.nav-tabs-tab, .nav-views-view').removeClass('active');
     if ($('#' + options.id).length) {
@@ -479,7 +494,12 @@ Navigation.prototype.newTab = function (url, options) {
 
     // update url and add events
     this._updateUrl(this._purifyUrl(url));
-    return this._addEvents(this.SESSION_ID++, options);
+    let newWebview = this._addEvents(this.SESSION_ID++, options);
+    if(typeof options.postTabOpenCallback === "function"){
+        options.postTabOpenCallback(newWebview)
+    }
+    return newWebview;
+
 } //:newTab()
 //
 // change current or specified tab and view

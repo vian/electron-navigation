@@ -235,6 +235,47 @@ const enav = new (require('electron-navigation')( { HERE } );
 
 ### __{ defaultFavicons : `<boolean>` }__
 > Uses the default favicons instead of the unified color coded ones in .nav-tabs-tab. Defaults to `false`.
+
+### __{ newTabCallback : `<function>` }__
+> Before a tab is created, an optional callback is invoked with `(url, options)`. It can be set for the `ElectronNavigation` instance or passed inside `newTab()` as an option.
+>
+> Optionally, the `url` and `options` can be altered and returned inside the callback result.
+> The callback may define a `postTabOpenCallback`, which will receive the created `webview`.
+>
+> If a falsy value is returned, the tab will not be created.
+
+```js
+// Simple callbacks which does not alter the parameters
+(url, options) => {
+    return true;
+}
+
+// Prevent tab creation
+(url, options) => {
+    return false;
+}
+
+// Callback which redirects the opened tab
+// Altered parameters imply that the tab should be shown
+(url, options) => {
+    url = "about:blank";
+    return {url};
+}
+
+// Invoke callback after webview creation
+(url, options) => {
+    options.postTabOpenCallback = webview => {
+        console.info("New webview created: ", webview);
+    }
+    return {options};
+}
+```
+### __{ newTabParams : `<function|array>` }__
+> Parameters to pass to `newTab()` when a new tab is opened by the new tab button. The parameters may be an array or a function that returns an array. Defauls to `['http://www.google.com/', {
+                              close: options.closableTabs,
+                              icon: NAV.TAB_ICON
+                          }]`.
+
 ```js
 // all options and their default values if omitted.
 let options = {
@@ -245,8 +286,10 @@ let options = {
     showAddTabButton: true,
     closableTabs: true,
     verticalTabs: false,
-    defaultFavicons: false
+    defaultFavicons: false,
+    newTabCallback: null
 }
+
 ```
 EXAMPLE : index.html 
 ```html
@@ -475,6 +518,10 @@ npm run demo4   // parent-child and local file demo
 </p>
 
 # History
+* 1.5.8
+    * `ADD` - *newTabCallback* and *newTabParams* options
+* 1.5.7
+    * `ADD` - *newWindowFrameNameBlacklistPattern* to *newTab()* *options*
 * 1.5.6
     * `CHANGE` - cleaned up **README.md** file, and added types to parameters.
     * `ADD` - preview for chrome theme.
