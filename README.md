@@ -275,7 +275,8 @@ const enav = new (require('electron-navigation')( { HERE } );
                               close: options.closableTabs,
                               icon: NAV.TAB_ICON
                           }]`.
-
+### __{ changeTabCallback : `<function>` }__
+> Function to invoke with visible `webview` after a new tab has become visible.
 ```js
 // all options and their default values if omitted.
 let options = {
@@ -519,7 +520,7 @@ npm run demo4   // parent-child and local file demo
 
 # History
 * 1.5.8
-    * `ADD` - *newTabCallback* and *newTabParams* options
+    * `ADD` - *newTabCallback*, *changeTabCallback* and *newTabParams* options
 * 1.5.7
     * `ADD` - *newWindowFrameNameBlacklistPattern* to *newTab()* *options*
 * 1.5.6

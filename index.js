@@ -41,6 +41,7 @@ function Navigation(options) {
         verticalTabs: false,
         defaultFavicons: false,
         newTabCallback: null,
+        changeTabCallback: null,
         newTabParams: null
     };
     options = options ? Object.assign(defaults,options) : defaults;
@@ -50,6 +51,7 @@ function Navigation(options) {
     globalCloseableTabsOverride = options.closableTabs;
     const NAV = this;
     this.newTabCallback = options.newTabCallback;
+    this.changeTabCallback = options.changeTabCallback;
     this.SESSION_ID = 1;
     if (options.defaultFavicons) {
         this.TAB_ICON = "default";
@@ -103,21 +105,24 @@ function Navigation(options) {
             .addClass('active');
 
         var session = $('.nav-views-view[data-session="' + sessionID + '"]')[0];
+        (NAV.changeTabCallback || (() => {}))(session);
         NAV._updateUrl(session.getURL());
         NAV._updateCtrls();        
         
         //
         // close tab and view
         //
-    }).on('click', '.nav-tabs-close', function () {
+    }).on('click', '.nav-tabs-close', function() {
         var sessionID = $(this).parent('.nav-tabs-tab').data('session');
         var session = $('.nav-tabs-tab, .nav-views-view').filter('[data-session="' + sessionID + '"]');
 
         if (session.hasClass('active')) {
             if (session.next('.nav-tabs-tab').length) {
                 session.next().addClass('active');
+                (NAV.changeTabCallback || (() => {}))(session.next()[1]);
             } else {
                 session.prev().addClass('active');
+                (NAV.changeTabCallback || (() => {}))(session.prev()[1]);
             }
         }
         session.remove();
@@ -416,7 +421,8 @@ Navigation.prototype.newTab = function (url, options) {
         close: true,
         readonlyUrl: false,
         contextMenu: true,
-        newTabCallback: this.newTabCallback
+        newTabCallback: this.newTabCallback,
+        changeTabCallback: this.changeTabCallback
     }
     options = options ? Object.assign(defaults,options) : defaults;
     if(typeof options.newTabCallback === "function"){
@@ -498,6 +504,7 @@ Navigation.prototype.newTab = function (url, options) {
     if(typeof options.postTabOpenCallback === "function"){
         options.postTabOpenCallback(newWebview)
     }
+    (this.changeTabCallback || (() => {}))(newWebview);
     return newWebview;
 
 } //:newTab()
@@ -534,11 +541,12 @@ Navigation.prototype.closeTab = function (id) {
             return false;
         }
     }
-
     if (session.next('.nav-tabs-tab').length) {
         session.next().addClass('active');
+        (this.changeTabCallback || (() => {}))(session.next()[1]);
     } else {
         session.prev().addClass('active');
+        (this.changeTabCallback || (() => {}))(session.prev()[1]);
     }
 
     session.remove();
@@ -752,6 +760,7 @@ Navigation.prototype.goToTab = function (index) {
         $('#nav-ctrls-url').blur();
         $activeTabAndView.removeClass('active');
         $tabAndViewToActivate.addClass('active');
+
         this._updateUrl();
         this._updateCtrls();
     }
