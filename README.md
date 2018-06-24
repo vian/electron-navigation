@@ -519,6 +519,8 @@ npm run demo4   // parent-child and local file demo
 </p>
 
 # History
+* 1.5.9
+    * `ADD` - goToTabByWebviewId (id) function to go to a tab identified by the id of the `<webview>` tag
 * 1.5.8
     * `ADD` - *newTabCallback*, *changeTabCallback* and *newTabParams* options
 * 1.5.7

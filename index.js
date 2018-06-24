@@ -765,6 +765,16 @@ Navigation.prototype.goToTab = function (index) {
         this._updateCtrls();
     }
 } //:goToTab()
+// go to a tab by id of the webview tag
+Navigation.prototype.goToTabByWebviewId = function(id){
+    const webviews = document.querySelectorAll("webview.nav-views-view");
+    for(let index in webviews){
+        if(webviews[index].id == id){
+            this.goToTab(+index + 1);
+            return;
+        }
+    }
+} //:goToTabByWebviewId()
 /**
  * MODULE EXPORTS
  */
