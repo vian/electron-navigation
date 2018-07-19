@@ -117,6 +117,8 @@ function Navigation(options) {
         var sessionID = $(this).parent('.nav-tabs-tab').data('session');
         var session = $('.nav-tabs-tab, .nav-views-view').filter('[data-session="' + sessionID + '"]');
 
+        (NAV.closeTabCallback || (() => {}))(session[1]);
+
         if (session.hasClass('active')) {
             if (session.next('.nav-tabs-tab').length) {
                 session.next().addClass('active');
@@ -126,7 +128,7 @@ function Navigation(options) {
                 (NAV.changeTabCallback || (() => {}))(session.prev()[1]);
             }
         }
-        (NAV.closeTabCallback || (() => {}))(session[1]);
+
         session.remove();
         NAV._updateUrl();
         NAV._updateCtrls();
@@ -543,6 +545,9 @@ Navigation.prototype.closeTab = function (id) {
             return false;
         }
     }
+
+    (this.closeTabCallback || (() => {}))(session[1]);
+
     if (session.next('.nav-tabs-tab').length) {
         session.next().addClass('active');
         (this.changeTabCallback || (() => {}))(session.next()[1]);
@@ -551,7 +556,6 @@ Navigation.prototype.closeTab = function (id) {
         (this.changeTabCallback || (() => {}))(session.prev()[1]);
     }
 
-    (this.closeTabCallback || (() => {}))(session[1]);
     session.remove();
     this._updateUrl();
     this._updateCtrls();
