@@ -42,6 +42,7 @@ function Navigation(options) {
         defaultFavicons: false,
         newTabCallback: null,
         changeTabCallback: null,
+        closeTabCallback: null,
         newTabParams: null
     };
     options = options ? Object.assign(defaults,options) : defaults;
@@ -107,8 +108,8 @@ function Navigation(options) {
         var session = $('.nav-views-view[data-session="' + sessionID + '"]')[0];
         (NAV.changeTabCallback || (() => {}))(session);
         NAV._updateUrl(session.getURL());
-        NAV._updateCtrls();        
-        
+        NAV._updateCtrls();
+
         //
         // close tab and view
         //
@@ -125,6 +126,7 @@ function Navigation(options) {
                 (NAV.changeTabCallback || (() => {}))(session.prev()[1]);
             }
         }
+        (NAV.closeTabCallback || (() => {}))(session[1]);
         session.remove();
         NAV._updateUrl();
         NAV._updateCtrls();
@@ -231,12 +233,12 @@ function Navigation(options) {
             this._loading();
         } else {
             this._stopLoading();
-        }         
+        }
         if (webview.getAttribute('data-readonly') == 'true') {
             $('#nav-ctrls-url').attr('readonly', 'readonly');
         } else {
             $('#nav-ctrls-url').removeAttr('readonly');
-        }        
+        }
 
     } //:_updateCtrls()
     //
@@ -479,9 +481,9 @@ Navigation.prototype.newTab = function (url, options) {
     } else {
         $('#nav-body-tabs').append(tab);
     }
-    // add webview    
+    // add webview
     let composedWebviewTag = `<webview class="nav-views-view active" data-session="${this.SESSION_ID}" src="${this._purifyUrl(url)}"`;
-    
+
     composedWebviewTag += ` data-readonly="${((options.readonlyUrl) ? 'true': 'false')}"`;
     if (options.id) {
         composedWebviewTag += ` id=${options.id}`;
@@ -494,7 +496,7 @@ Navigation.prototype.newTab = function (url, options) {
             composedWebviewTag += ` ${key}="${options.webviewAttributes[key]}"`;
         });
     }
-    $('#nav-body-views').append(`${composedWebviewTag}></webview>`);    
+    $('#nav-body-views').append(`${composedWebviewTag}></webview>`);
     // enable reload button
     $('#nav-ctrls-reload').removeClass('disabled');
 
@@ -549,6 +551,7 @@ Navigation.prototype.closeTab = function (id) {
         (this.changeTabCallback || (() => {}))(session.prev()[1]);
     }
 
+    (this.closeTabCallback || (() => {}))(session[1]);
     session.remove();
     this._updateUrl();
     this._updateCtrls();
