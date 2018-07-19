@@ -53,6 +53,7 @@ function Navigation(options) {
     const NAV = this;
     this.newTabCallback = options.newTabCallback;
     this.changeTabCallback = options.changeTabCallback;
+    this.closeTabCallback = options.closeTabCallback;
     this.SESSION_ID = 1;
     if (options.defaultFavicons) {
         this.TAB_ICON = "default";
